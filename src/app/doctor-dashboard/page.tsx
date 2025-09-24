@@ -22,7 +22,7 @@ const features = [
     icon: Calendar,
     title: "Upcoming Appointments",
     description: "View and manage your daily schedule.",
-    link: "#",
+    link: "/doctor-dashboard/schedule",
     stat: "5 today",
     cta: "View Schedule",
   },
