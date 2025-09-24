@@ -37,8 +37,11 @@ export function Header() {
           <Button asChild variant="destructive">
             <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
           </Button>
+           <Button asChild variant="ghost">
+            <Link href="/login">Login</Link>
+          </Button>
           <Button asChild>
-            <Link href="/appointments">Book Now</Link>
+            <Link href="/signup">Sign Up</Link>
           </Button>
         </div>
       </div>
