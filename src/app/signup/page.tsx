@@ -4,31 +4,58 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { User, Stethoscope, HeartHandshake, ArrowRight } from "lucide-react";
 
-export default function SignupDisabledPage() {
+export default function SignupPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-primary/5 p-4">
-      <div className="mb-8 flex items-center gap-4">
+      <div className="mb-8">
         <Link href="/"><Logo className="h-16 w-auto" /></Link>
       </div>
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Sign Up Disabled</CardTitle>
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Join Arogya</CardTitle>
           <CardDescription>
-            User registration is not available at this time.
+            Please select your role to get started with the registration process.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <p className="text-center text-sm">
-            Please contact support if you believe this is an error.
-          </p>
-          <div className="mt-4 text-center text-sm">
-            <Link href="/login" className="underline">
-              Return to Login
+        <CardContent className="grid gap-4">
+          <Button asChild size="lg" className="w-full justify-between">
+            <Link href="/signup/patient">
+              <div className="flex items-center gap-2">
+                <User />
+                <span>Register as a Patient</span>
+              </div>
+              <ArrowRight />
             </Link>
-          </div>
+          </Button>
+          <Button asChild size="lg" className="w-full justify-between">
+            <Link href="/signup/doctor">
+              <div className="flex items-center gap-2">
+                <Stethoscope />
+                <span>Register as a Doctor</span>
+              </div>
+              <ArrowRight />
+            </Link>
+          </Button>
+          <Button asChild size="lg" className="w-full justify-between">
+            <Link href="/signup/asha">
+              <div className="flex items-center gap-2">
+                <HeartHandshake />
+                <span>Register as an ASHA Worker</span>
+              </div>
+              <ArrowRight />
+            </Link>
+          </Button>
         </CardContent>
       </Card>
+       <div className="mt-6 text-center text-sm">
+            Already have an account?{" "}
+            <Link href="/login" className="underline">
+              Log In
+            </Link>
+        </div>
     </div>
   );
 }

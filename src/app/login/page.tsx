@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -28,10 +27,15 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/logo";
 import { useAuth } from "@/hooks/use-auth";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { User, Stethoscope, HeartHandshake } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(1, { message: "Password is required." }),
+  role: z.enum(["patient", "doctor", "asha"], {
+    required_error: "Please select a role.",
+  }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -46,6 +50,7 @@ export default function LoginPage() {
     defaultValues: {
       email: "",
       password: "",
+      role: "patient",
     },
   });
 
@@ -53,17 +58,26 @@ export default function LoginPage() {
     // In a real app, you'd handle authentication here.
     console.log("Login data:", data);
 
-    // Simulate login by just using part of the email as name
     const name = data.email.split('@')[0];
-    login(name, data.email);
+    login(name, data.email, data.role);
 
     toast({
       title: "Login Successful",
-      description: "Welcome back!",
+      description: `Welcome back, ${name}!`,
     });
 
-    // Redirect to the home page after a successful "login".
-    router.push("/home");
+    switch (data.role) {
+      case "doctor":
+        router.push("/doctor-dashboard");
+        break;
+      case "asha":
+        router.push("/asha-dashboard");
+        break;
+      case "patient":
+      default:
+        router.push("/home");
+        break;
+    }
   };
 
   return (
@@ -83,13 +97,34 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
               <FormField
                 control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>I am a...</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="patient"><div className="flex items-center gap-2"><User />Patient</div></SelectItem>
+                        <SelectItem value="doctor"><div className="flex items-center gap-2"><Stethoscope />Doctor</div></SelectItem>
+                        <SelectItem value="asha"><div className="flex items-center gap-2"><HeartHandshake />ASHA Worker</div></SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email or Phone</FormLabel>
                     <FormControl>
                       <Input
-                        type="email"
                         placeholder="patient@arogya.com"
                         {...field}
                       />
@@ -116,6 +151,12 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="underline">
+              Sign up
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>
