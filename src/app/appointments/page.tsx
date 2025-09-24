@@ -125,19 +125,41 @@ export default function AppointmentsPage() {
 
     const isPastAppointment = new Date(data.appointmentDate) < new Date();
 
+    // Mock data for past appointments
+    const diagnoses = ["Common Cold", "Seasonal Allergies", "Minor Sprain", "Hypertension Checkup"];
+    const notes = [
+        "Patient advised to rest, stay hydrated, and take over-the-counter medication as needed. Follow up if symptoms persist after 7 days.",
+        "Prescribed antihistamines and advised to avoid known allergens. Suggested using an air purifier at home.",
+        "Applied R.I.C.E (Rest, Ice, Compression, Elevation) protocol. Prescribed pain relief gel. Follow up in 2 weeks if pain continues.",
+        "Blood pressure is stable. Continue with current medication. Recommended dietary changes and light exercise.",
+    ];
+    const prescriptions = [
+        "Paracetamol 500mg (as needed for fever/pain)",
+        "Cetirizine 10mg (once daily at night)",
+        "Diclofenac Gel (apply locally twice a day)",
+        "Amlodipine 5mg (once daily in the morning)",
+    ];
+    const reports = [
+        "Blood Test Results: All values within normal range.",
+        "Allergy Panel: Mild reaction to pollen. Otherwise normal.",
+        "X-Ray (Ankle): No fracture detected. Mild ligament inflammation observed.",
+        "ECG Report: Normal sinus rhythm. No abnormalities detected.",
+    ];
+    const randomIndex = Math.floor(Math.random() * diagnoses.length);
+
     const newAppointment: Appointment = {
       ...data,
-      id: new Date().toISOString(),
+      id: `APT-${Date.now()}`,
       patientName: patientName,
       doctorName: doctor.name,
       doctorSpecialty: data.department,
       type: "in-person", 
       status: isPastAppointment ? "Completed" : "Scheduled",
       reason: "N/A",
-      diagnosis: isPastAppointment ? "Common Cold" : undefined,
-      doctorsNotes: isPastAppointment ? "Patient advised to rest, stay hydrated, and take over-the-counter medication as needed. Follow up if symptoms persist after 7 days." : undefined,
-      prescription: isPastAppointment ? "Paracetamol 500mg (as needed for fever/pain)" : undefined,
-      testReports: isPastAppointment ? "Blood Test Results: Normal. X-Ray: No issues detected." : undefined,
+      diagnosis: isPastAppointment ? diagnoses[randomIndex] : undefined,
+      doctorsNotes: isPastAppointment ? notes[randomIndex] : undefined,
+      prescription: isPastAppointment ? prescriptions[randomIndex] : undefined,
+      testReports: isPastAppointment ? reports[randomIndex] : undefined,
     };
     setAppointments(prev => [...prev, newAppointment]);
     toast({
