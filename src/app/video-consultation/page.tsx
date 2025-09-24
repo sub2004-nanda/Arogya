@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ interface Vitals {
 
 export default function VideoConsultationPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [isConnecting, setIsConnecting] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
@@ -91,10 +93,22 @@ export default function VideoConsultationPage() {
   const handleEndCall = () => {
     setIsConnected(false);
     setIsConnecting(false);
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    streamRef.current = null;
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
     toast({
       title: "Call Ended",
       description: "Your consultation has ended.",
     });
+
+    // Navigate back to the previous page
+    router.back();
   };
 
   return (
