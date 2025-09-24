@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -139,13 +140,6 @@ export default function AppointmentsPage() {
     });
     form.reset();
   }
-
-  const handleInstantConsultation = () => {
-    toast({
-      title: "Feature Coming Soon!",
-      description: "Instant video consultations will be available shortly.",
-    });
-  };
 
   const departmentIcons: { [key: string]: React.ElementType } = {
     cardiology: Heart,
@@ -367,9 +361,11 @@ export default function AppointmentsPage() {
                   <p className="text-sm text-muted-foreground">
                       Our general physicians are available around the clock to help you with non-emergency health concerns.
                   </p>
-                  <Button onClick={handleInstantConsultation} size="lg">
-                    <Video className="mr-2 h-5 w-5" />
-                    Start Video Consultation
+                  <Button asChild size="lg">
+                    <Link href="/video-consultation">
+                      <Video className="mr-2 h-5 w-5" />
+                      Start Video Consultation
+                    </Link>
                   </Button>
               </div>
             </CardContent>
@@ -380,5 +376,6 @@ export default function AppointmentsPage() {
       <Footer />
     </div>
   );
+}
 
     
