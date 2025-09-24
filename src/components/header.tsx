@@ -9,9 +9,8 @@ import { Siren, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/symptom-checker", label: "Symptom Checker" },
   { href: "/appointments", label: "Appointments" },
+  { href: "/symptom-checker", label: "Symptom Checker" },
   { href: "/family-health", label: "Family Health" },
   { href: "/pharmacies", label: "Pharmacies" },
 ];
@@ -19,11 +18,15 @@ const navLinks = [
 export function Header() {
   const { user, logout } = useAuth();
 
+  if (!user) {
+    return null; // Don't render header if not logged in
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/appointments" className="flex items-center gap-2">
             <Logo className="h-10 w-auto" />
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
@@ -43,20 +46,9 @@ export function Header() {
           <Button asChild variant="destructive">
             <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
           </Button>
-          {user ? (
-             <Button variant="ghost" onClick={logout}>
-                <LogOut className="mr-2 h-4 w-4" /> Logout
-            </Button>
-          ) : (
-            <>
-              <Button asChild variant="ghost">
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </>
-          )}
+          <Button variant="ghost" onClick={logout}>
+              <LogOut className="mr-2 h-4 w-4" /> Logout
+          </Button>
         </div>
       </div>
     </header>

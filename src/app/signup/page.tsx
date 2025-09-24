@@ -70,8 +70,8 @@ export default function SignupPage() {
       description: "You have been successfully registered.",
     });
 
-    // Redirect to the homepage after a successful signup.
-    router.push("/");
+    // Redirect to the appointments page after a successful signup.
+    router.push("/appointments");
   };
 
   return (

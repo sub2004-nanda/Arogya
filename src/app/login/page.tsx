@@ -60,8 +60,8 @@ export default function LoginPage() {
       description: "Welcome back!",
     });
 
-    // Redirect to the homepage after a successful "login".
-    router.push("/");
+    // Redirect to the appointments page after a successful "login".
+    router.push("/appointments");
   };
 
   return (
@@ -73,7 +73,7 @@ export default function LoginPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            Enter your credentials to access your account.
+            Enter your credentials to access your Arogya account.
           </CardDescription>
         </CardHeader>
         <CardContent>
