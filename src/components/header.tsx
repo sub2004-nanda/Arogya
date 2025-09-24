@@ -77,9 +77,11 @@ export function Header() {
         </div>
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
-          <Button asChild variant="destructive">
-            <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
-          </Button>
+          {user.role !== 'doctor' && (
+            <Button asChild variant="destructive">
+              <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
+            </Button>
+          )}
           <Button variant="ghost" size="icon" onClick={logout}>
               <LogOut className="h-4 w-4" />
               <span className="sr-only">Logout</span>
