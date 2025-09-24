@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { HealthTips } from "@/components/health-tips";
+import { Faq } from "@/components/faq";
 import { Stethoscope, Bot, Video, Pill, Users, HeartHandshake, ArrowRight, FileText, BookHeart } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
@@ -130,8 +130,8 @@ export default function HomePage() {
                     </div>
                     
                     <div className="lg:col-span-1">
-                        <h2 className="font-headline text-3xl font-bold tracking-tight mb-8">Health & Wellness</h2>
-                        <HealthTips />
+                        <h2 className="font-headline text-3xl font-bold tracking-tight mb-8">FAQs & Support</h2>
+                        <Faq />
                     </div>
                 </div>
             </div>
