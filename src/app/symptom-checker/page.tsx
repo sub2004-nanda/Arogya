@@ -81,16 +81,21 @@ export default function SymptomCheckerPage() {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
+      // Set canvas dimensions to match the video feed
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
       const context = canvas.getContext("2d");
       if (context) {
-        // Flip the image horizontally for a mirror effect
-        context.translate(canvas.width, 0);
+        // Flip the context horizontally to create a mirror image
+        context.translate(video.videoWidth, 0);
         context.scale(-1, 1);
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+        
+        // Draw the video frame onto the canvas
+        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        
+        // Reset the transformation
+        context.setTransform(1, 0, 0, 1, 0, 0);
 
         const dataUrl = canvas.toDataURL("image/jpeg");
         setCapturedImage(dataUrl);
