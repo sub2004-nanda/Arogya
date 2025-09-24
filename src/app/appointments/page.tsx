@@ -123,15 +123,20 @@ export default function AppointmentsPage() {
         patientName = familyMember?.name || 'Unknown Family Member';
     }
 
+    const isPastAppointment = new Date(data.appointmentDate) < new Date();
+
     const newAppointment: Appointment = {
       ...data,
       id: new Date().toISOString(),
       patientName: patientName,
       doctorName: doctor.name,
       doctorSpecialty: data.department,
-      type: "in-person", // Defaulting as UI for this was removed in this version
-      status: "Scheduled",
-      reason: "N/A" // Defaulting as UI for this was removed in this version
+      type: "in-person", 
+      status: isPastAppointment ? "Completed" : "Scheduled",
+      reason: "N/A",
+      diagnosis: isPastAppointment ? "Common Cold" : undefined,
+      doctorsNotes: isPastAppointment ? "Patient advised to rest, stay hydrated, and take over-the-counter medication as needed. Follow up if symptoms persist after 7 days." : undefined,
+      prescription: isPastAppointment ? "Paracetamol 500mg (as needed for fever/pain)" : undefined,
     };
     setAppointments(prev => [...prev, newAppointment]);
     toast({
@@ -377,5 +382,3 @@ export default function AppointmentsPage() {
     </div>
   );
 }
-
-    

@@ -90,7 +90,7 @@ export default function HomePage() {
                 </Button>
                 <Button asChild size="lg" variant="secondary">
                   <Link href="/symptom-checker">
-                    Get Symptom Checker
+                    AI Symptom Checker
                   </Link>
                 </Button>
               </div>

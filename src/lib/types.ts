@@ -15,6 +15,9 @@ export interface Appointment {
   age?: number;
   gender?: string;
   department?: string;
+  diagnosis?: string;
+  doctorsNotes?: string;
+  prescription?: string;
 }
 
 export interface FamilyMember {
