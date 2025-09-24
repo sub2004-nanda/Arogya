@@ -22,8 +22,9 @@ export function useAuth() {
 
   const logout = () => {
     setUser(null);
-    router.push('/login'); // Redirect to login on logout
+    router.push('/'); // Redirect to landing page on logout
   };
 
   return { user, login, logout };
 }
+
