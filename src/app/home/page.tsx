@@ -11,6 +11,9 @@ import { Stethoscope, Bot, Video, Pill, Users, HeartHandshake, ArrowRight, FileT
 import { useAuth } from "@/hooks/use-auth";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+
 
 const features = [
   {
@@ -63,6 +66,33 @@ const features = [
   },
 ];
 
+const announcements = [
+    {
+        id: "feat-symptom-checker",
+        title: "Feeling Unwell?",
+        description: "Use our AI Symptom Checker for instant insights. Describe your symptoms and get guidance on potential next steps.",
+        link: "/symptom-checker",
+        linkText: "Try the Checker",
+        image: PlaceHolderImages.find(img => img.id === 'feat-symptom-checker')
+    },
+    {
+        id: "feat-video-consult",
+        title: "Video Consultations",
+        description: "Connect with a qualified doctor from the comfort of your home. No travel, no waiting rooms.",
+        link: "/video-consultation",
+        linkText: "Start a Call",
+        image: PlaceHolderImages.find(img => img.id === 'feat-video-consult')
+    },
+    {
+        id: "feat-health-records",
+        title: "Your Health, Organized",
+        description: "Access your complete medical history, including past diagnoses, prescriptions, and test reports, anytime.",
+        link: "/health-record",
+        linkText: "View Records",
+        image: PlaceHolderImages.find(img => img.id === 'feat-health-records')
+    },
+]
+
 export default function HomePage() {
   const { user } = useAuth();
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-home');
@@ -109,6 +139,57 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+         {/* Announcements Carousel */}
+        <section className="py-20 sm:py-24">
+            <div className="container mx-auto px-4">
+                 <h2 className="text-center font-headline text-3xl font-bold tracking-tight mb-8">What's New at Arogya</h2>
+                 <Carousel
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    plugins={[
+                        Autoplay({
+                          delay: 5000,
+                        }),
+                    ]}
+                    className="w-full"
+                    >
+                    <CarouselContent>
+                        {announcements.map((item) => (
+                        <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
+                           <Card className="overflow-hidden h-full">
+                             <div className="relative h-48 w-full">
+                                {item.image && (
+                                    <Image
+                                        src={item.image.imageUrl}
+                                        alt={item.image.description}
+                                        fill
+                                        className="object-cover"
+                                        data-ai-hint={item.image.imageHint}
+                                    />
+                                )}
+                             </div>
+                             <CardHeader>
+                                <CardTitle>{item.title}</CardTitle>
+                             </CardHeader>
+                             <CardContent>
+                                <p className="text-muted-foreground mb-4">{item.description}</p>
+                                <Button asChild>
+                                    <Link href={item.link}>{item.linkText} <ArrowRight className="ml-2"/></Link>
+                                </Button>
+                             </CardContent>
+                           </Card>
+                        </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
+            </div>
+        </section>
+
 
         {/* Features Section */}
         <section className="bg-primary/5 py-20 sm:py-24">
