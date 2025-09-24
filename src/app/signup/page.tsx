@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/logo";
+import { useAuth } from "@/hooks/use-auth";
 
 const signupSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
@@ -47,6 +48,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -60,13 +62,16 @@ export default function SignupPage() {
     // In a real app, you'd handle user creation here.
     console.log("Signup data:", data);
 
+    // For now, we'll just log them in directly
+    login(data.email, data.role);
+
     toast({
       title: "Account Created!",
       description: "You have been successfully registered.",
     });
 
-    // Redirect to the login page after a successful signup.
-    router.push("/login");
+    // Redirect to the homepage after a successful signup.
+    router.push("/");
   };
 
   return (
