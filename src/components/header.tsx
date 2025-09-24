@@ -85,6 +85,14 @@ export function Header() {
               </Link>
             </Button>
           )}
+          {user.role === 'doctor' && (
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/doctor-dashboard/quick-notes">
+                <Mic className="h-5 w-5" />
+                <span className="sr-only">Voice for Notes</span>
+              </Link>
+            </Button>
+          )}
           {user.role !== 'doctor' && user.role !== 'pharmacy' && (
             <Button asChild variant="destructive">
               <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
