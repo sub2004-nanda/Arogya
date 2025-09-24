@@ -107,7 +107,7 @@ export default function TreatmentGuidePage() {
                       <AlertTitle>Important Disclaimer</AlertTitle>
                       <AlertDescription>
                         This is an AI-generated analysis and not a medical diagnosis. Please consult a qualified healthcare professional for any health concerns.
-                      </AlerteDescription>
+                      </AlertDescription>
                     </Alert>
                   </CardContent>
                 </Card>
