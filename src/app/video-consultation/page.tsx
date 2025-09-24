@@ -36,6 +36,16 @@ export default function VideoConsultationPage() {
 
   useEffect(() => {
     const getCameraPermission = async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setHasCameraPermission(false);
+        toast({
+            variant: 'destructive',
+            title: 'Unsupported Browser',
+            description: 'Your browser does not support video consultations.',
+        });
+        return;
+      }
+
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         streamRef.current = stream;
@@ -46,10 +56,24 @@ export default function VideoConsultationPage() {
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
+
+        let title = 'Camera Access Denied';
+        let description = 'Please enable camera and microphone permissions in your browser settings to use video consultation.';
+
+        if (error instanceof DOMException) {
+            if (error.name === 'NotFoundError') {
+                title = 'No Device Found';
+                description = 'Could not find a camera or microphone. Please ensure they are connected and available.';
+            } else if (error.name === 'NotAllowedError') {
+                 title = 'Permission Denied';
+                 description = 'Camera and microphone access was denied. Please grant permission to continue.';
+            }
+        }
+        
         toast({
           variant: 'destructive',
-          title: 'Camera Access Denied',
-          description: 'Please enable camera and microphone permissions in your browser settings to use video consultation.',
+          title: title,
+          description: description,
         });
       }
     };
