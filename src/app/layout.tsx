@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 export const metadata: Metadata = {
   title: 'Arogya',
   description: 'A multilingual, low-bandwidth-first healthcare web platform.',
+  icons: false,
 };
 
 export default function RootLayout({
