@@ -31,8 +31,8 @@ export default function SymptomCheckerPage() {
   const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
+    // Cleanup function to stop camera stream when the component unmounts
     return () => {
-      // Stop camera stream when component unmounts
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
@@ -40,32 +40,28 @@ export default function SymptomCheckerPage() {
   }, []);
 
   const enableCamera = async () => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-        setHasCameraPermission(true);
-        setIsCameraEnabled(true);
-        setCapturedImage(null);
-      } catch (error) {
-        console.error("Error accessing camera:", error);
-        setHasCameraPermission(false);
-        toast({
-          variant: "destructive",
-          title: "Camera Access Denied",
-          description: "Please enable camera permissions in your browser settings.",
-        });
+    if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
       }
-    } else {
-        setHasCameraPermission(false);
-        toast({
-          variant: "destructive",
-          title: "Camera Not Supported",
-          description: "Your browser does not support camera access.",
-        });
+      setHasCameraPermission(true);
+      setIsCameraEnabled(true);
+      setCapturedImage(null); // Clear previous image
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+      setHasCameraPermission(false);
+      setIsCameraEnabled(false);
+      toast({
+        variant: "destructive",
+        title: "Camera Access Denied",
+        description: "Please enable camera permissions in your browser settings to use this app.",
+      });
     }
   };
 
@@ -73,10 +69,10 @@ export default function SymptomCheckerPage() {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
     }
-    if (videoRef.current) {
-        videoRef.current.srcObject = null;
-    }
     streamRef.current = null;
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
     setIsCameraEnabled(false);
   };
 
@@ -85,12 +81,8 @@ export default function SymptomCheckerPage() {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
-      // Set canvas dimensions to match video stream
-      const stream = video.srcObject as MediaStream;
-      const track = stream.getVideoTracks()[0];
-      const settings = track.getSettings();
-      canvas.width = settings.width || video.videoWidth;
-      canvas.height = settings.height || video.videoHeight;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
       
       const context = canvas.getContext("2d");
       if (context) {
@@ -99,11 +91,19 @@ export default function SymptomCheckerPage() {
         context.scale(-1, 1);
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+
         const dataUrl = canvas.toDataURL("image/jpeg");
         setCapturedImage(dataUrl);
         disableCamera();
       }
     }
+  };
+  
+  const resetCapture = () => {
+    setCapturedImage(null);
+    setHasCameraPermission(null);
+    setIsCameraEnabled(false);
+    disableCamera();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -111,6 +111,7 @@ export default function SymptomCheckerPage() {
     if (!symptoms.trim() && !capturedImage) return;
 
     startTransition(async () => {
+      setResult(null);
       const response = await checkSymptoms({ symptoms, photoDataUri: capturedImage || undefined });
       setResult(response);
     });
@@ -186,8 +187,10 @@ export default function SymptomCheckerPage() {
                     {capturedImage && (
                       <div className="space-y-4">
                         <p>Photo captured:</p>
-                        <img src={capturedImage} alt="Symptom" className="rounded-md max-h-60" />
-                        <Button onClick={() => { setCapturedImage(null); setHasCameraPermission(null); }} type="button" variant="outline">
+                        <div className="relative">
+                            <img src={capturedImage} alt="Symptom" className="rounded-md max-h-60" />
+                        </div>
+                        <Button onClick={resetCapture} type="button" variant="outline">
                           Remove Photo
                         </Button>
                       </div>
@@ -217,7 +220,7 @@ export default function SymptomCheckerPage() {
             </Card>
           )}
 
-          {result && (
+          {result && !isPending && (
             <div className="mx-auto mt-6 max-w-3xl">
               {result.error ? (
                 <Alert variant="destructive">
