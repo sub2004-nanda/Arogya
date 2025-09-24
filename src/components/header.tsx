@@ -12,13 +12,14 @@ const patientNavLinks = [
   { href: "/home", label: "Home" },
   { href: "/appointments", label: "Appointments" },
   { href: "/symptom-checker", label: "Symptom Checker" },
+  { href: "/community", label: "Community Hub" },
   { href: "/pharmacies", label: "Pharmacies" },
 ];
 
 const doctorNavLinks = [
   { href: "/doctor-dashboard", label: "Home" },
   { href: "/appointments", label: "Appointments" },
-  { href: "/doctor-dashboard", label: "My Patients" }, // Placeholder, can be a dedicated page
+  { href: "/doctor-dashboard/patient-queue", label: "My Patients" },
   { href: "/video-consultation", label: "Video Consultation" },
 ];
 
