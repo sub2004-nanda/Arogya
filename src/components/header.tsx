@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { Siren } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -33,6 +34,9 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
+          <Button asChild variant="destructive">
+            <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
+          </Button>
           <Button asChild>
             <Link href="/appointments">Book Now</Link>
           </Button>

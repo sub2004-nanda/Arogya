@@ -6,6 +6,7 @@ import {
   Users,
   HeartPulse,
   Contact,
+  Siren,
 } from 'lucide-react';
 
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -16,6 +17,12 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 
 const features = [
+  {
+    title: 'Emergency',
+    description: 'Immediate help for critical situations.',
+    href: '/emergency',
+    icon: Siren,
+  },
   {
     title: 'AI Symptom Checker',
     description: 'Get potential causes for your symptoms.',
@@ -47,7 +54,7 @@ const features = [
     icon: Pill,
   },
   {
-    title: 'Community & Health Hub',
+    title: 'Community',
     description: 'Connect with others and stay informed on health topics.',
     href: '/community',
     icon: Users,
@@ -105,9 +112,9 @@ export default function Home() {
             <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((feature) => (
                 <Link href={feature.href} key={feature.title} className="group">
-                  <Card className="h-full transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1">
+                  <Card className={`h-full transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 ${feature.title === 'Emergency' ? 'border-destructive bg-destructive/5 hover:border-destructive' : ''}`}>
                     <CardHeader className="flex flex-row items-center gap-4">
-                      <div className="rounded-lg bg-primary/10 p-3 text-primary">
+                      <div className={`rounded-lg p-3 ${feature.title === 'Emergency' ? 'bg-destructive/10 text-destructive' : 'bg-primary/10 text-primary'}`}>
                         <feature.icon className="h-6 w-6" />
                       </div>
                       <CardTitle className="font-headline">{feature.title}</CardTitle>
