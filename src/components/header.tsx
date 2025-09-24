@@ -7,10 +7,8 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/symptom-checker", label: "Symptom Checker" },
   { href: "/appointments", label: "Appointments" },
-  { href: "/health-record", label: "Health Records" },
   { href: "/family-health", label: "Family Health" },
   { href: "/pharmacies", label: "Pharmacies" },
-  { href: "/community", label: "Community" },
 ];
 
 export function Header() {
