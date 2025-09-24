@@ -12,7 +12,6 @@ const navLinks = [
   { href: "/home", label: "Home" },
   { href: "/appointments", label: "Appointments" },
   { href: "/symptom-checker", label: "Symptom Checker" },
-  { href: "/treatment-guide", label: "Treatment Guide" },
   { href: "/family-health", label: "Family Health" },
   { href: "/pharmacies", label: "Pharmacies" },
 ];
