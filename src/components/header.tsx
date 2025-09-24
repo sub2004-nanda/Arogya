@@ -5,13 +5,13 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Siren, LogOut } from "lucide-react";
+import { Siren, LogOut, Mic } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 const patientNavLinks = [
   { href: "/home", label: "Home" },
   { href: "/appointments", label: "Appointments" },
-  { href: "/symptom-checker", label: "Voice-to-text bot" },
+  { href: "/symptom-checker", label: "Symptom Checker" },
   { href: "/community", label: "Community Hub" },
   { href: "/pharmacies", label: "Pharmacies" },
 ];
@@ -75,8 +75,16 @@ export function Header() {
             ))}
           </nav>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <LanguageSwitcher />
+           {user.role === 'patient' && (
+            <Button asChild variant="ghost" size="icon">
+              <Link href="/symptom-checker">
+                <Mic className="h-5 w-5" />
+                <span className="sr-only">Voice to Text</span>
+              </Link>
+            </Button>
+          )}
           {user.role !== 'doctor' && user.role !== 'pharmacy' && (
             <Button asChild variant="destructive">
               <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
