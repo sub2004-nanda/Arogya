@@ -2,14 +2,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pill } from "lucide-react";
+import { Pill, ArrowLeft } from "lucide-react";
 
 // Mock data - In a real app, this would come from a database
 const mockPharmacies = [
@@ -77,6 +79,14 @@ export default function PharmacyStockPage({ params }: { params: { id: string } }
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mx-auto max-w-4xl">
+            <div className="mb-6">
+                <Button asChild variant="outline">
+                    <Link href="/pharmacies">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Pharmacies
+                    </Link>
+                </Button>
+            </div>
             <div className="text-center">
               <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">{pharmacy.name}</h1>
               <p className="mt-4 text-lg text-muted-foreground">Check available medicine stock.</p>
