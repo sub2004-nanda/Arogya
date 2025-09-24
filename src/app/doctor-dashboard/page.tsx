@@ -14,7 +14,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { Calendar, Users, Video, ArrowRight, NotebookPen } from "lucide-react";
+import { Calendar, Users, Video, ArrowRight, NotebookPen, Bot } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const features = [
@@ -33,6 +33,14 @@ const features = [
     link: "/doctor-dashboard/patient-queue",
     stat: "12 waiting",
     cta: "Manage Queue",
+  },
+   {
+    icon: Bot,
+    title: "AI Patient Insights",
+    description: "Get AI summaries of patient health.",
+    link: "/doctor-dashboard/ai-insights",
+    stat: "Review",
+    cta: "Analyze",
   },
   {
     icon: Video,
@@ -96,7 +104,7 @@ export default function DoctorDashboardPage() {
                     Everything you need for a productive day, right at your fingertips.
                 </p>
             </div>
-            <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((feature) => (
                 <Card key={feature.title} className="flex flex-col text-left transition-shadow hover:shadow-xl">
                     <CardHeader>
