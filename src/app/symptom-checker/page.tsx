@@ -178,7 +178,7 @@ export default function SymptomCheckerPage() {
         // Reset the transformation
         context.setTransform(1, 0, 0, 1, 0, 0);
 
-        const dataUrl = canvas.toDataURL("image/jpeg");
+        const dataUrl = canvas.toDataURL("image/webp");
         setCapturedImage(dataUrl);
         disableCamera();
       }
@@ -250,7 +250,7 @@ export default function SymptomCheckerPage() {
                   <CardHeader>
                     <CardTitle>Visual Analysis (Optional)</CardTitle>
                     <CardDescription>
-                      Use your camera to provide a photo of the symptom.
+                      Use your camera to provide a photo of the symptom. The image will be converted to WebP format to save data.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -285,7 +285,7 @@ export default function SymptomCheckerPage() {
                     )}
                     {capturedImage && (
                       <div className="space-y-4">
-                        <p>Photo captured:</p>
+                        <p>Photo captured (as WebP):</p>
                         <div className="relative">
                             <img src={capturedImage} alt="Symptom" className="rounded-md max-h-60" />
                         </div>
@@ -355,5 +355,3 @@ export default function SymptomCheckerPage() {
     </div>
   );
 }
-
-    
