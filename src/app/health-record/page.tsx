@@ -14,6 +14,28 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { FileText, Calendar, Clock, Pill, Clipboard, Stethoscope, Beaker } from "lucide-react";
 import { format } from "date-fns";
 
+// Mock data for past appointments
+const mockDiagnoses = ["Common Cold", "Seasonal Allergies", "Minor Sprain", "Hypertension Checkup"];
+const mockNotes = [
+    "Patient advised to rest, stay hydrated, and take over-the-counter medication as needed. Follow up if symptoms persist after 7 days.",
+    "Prescribed antihistamines and advised to avoid known allergens. Suggested using an air purifier at home.",
+    "Applied R.I.C.E (Rest, Ice, Compression, Elevation) protocol. Prescribed pain relief gel. Follow up in 2 weeks if pain continues.",
+    "Blood pressure is stable. Continue with current medication. Recommended dietary changes and light exercise.",
+];
+const mockPrescriptions = [
+    "Paracetamol 500mg (as needed for fever/pain)",
+    "Cetirizine 10mg (once daily at night)",
+    "Diclofenac Gel (apply locally twice a day)",
+    "Amlodipine 5mg (once daily in the morning)",
+];
+const mockReports = [
+    "Blood Test Results: All values within normal range.",
+    "Allergy Panel: Mild reaction to pollen. Otherwise normal.",
+    "X-Ray (Ankle): No fracture detected. Mild ligament inflammation observed.",
+    "ECG Report: Normal sinus rhythm. No abnormalities detected.",
+];
+
+
 export default function HealthRecordPage() {
   const { user } = useAuth();
   const [appointments] = useLocalStorage<Appointment[]>("appointments", []);
@@ -24,6 +46,20 @@ export default function HealthRecordPage() {
     
   const pastAppointments = appointments
     .filter(a => new Date(a.appointmentDate) < new Date())
+    .map((appt, index) => {
+        // If the past appointment is missing details, fill them in with mock data.
+        if (appt.status === "Completed" && !appt.diagnosis) {
+            const randomIndex = index % mockDiagnoses.length;
+            return {
+                ...appt,
+                diagnosis: mockDiagnoses[randomIndex],
+                doctorsNotes: mockNotes[randomIndex],
+                prescription: mockPrescriptions[randomIndex],
+                testReports: mockReports[randomIndex],
+            };
+        }
+        return appt;
+    })
     .sort((a, b) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime());
 
   const getStatusVariant = (status: string): "default" | "secondary" | "destructive" => {
