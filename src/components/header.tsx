@@ -10,10 +10,12 @@ import { Siren, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 const navLinks = [
+  { href: "/home", label: "Home" },
   { href: "/appointments", label: "Appointments" },
   { href: "/symptom-checker", label: "Symptom Checker" },
   { href: "/family-health", label: "Family Health" },
   { href: "/pharmacies", label: "Pharmacies" },
+  { href: "/community", label: "Community" },
 ];
 
 export function Header() {
@@ -27,7 +29,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link href="/appointments" className="flex items-center gap-2">
+          <Link href="/home" className="flex items-center gap-2">
             <Logo className="h-10 w-auto" />
           </Link>
           <nav className="hidden items-center gap-6 md:flex">

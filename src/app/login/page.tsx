@@ -61,8 +61,8 @@ export default function LoginPage() {
       description: "Welcome back!",
     });
 
-    // Redirect to the appointments page after a successful "login".
-    router.push("/appointments");
+    // Redirect to the home page after a successful "login".
+    router.push("/home");
   };
 
   return (

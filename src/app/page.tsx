@@ -51,7 +51,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (user) {
-      router.replace("/appointments");
+      router.replace("/home");
     } else {
       setIsLoading(false);
     }

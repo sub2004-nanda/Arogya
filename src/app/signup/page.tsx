@@ -71,8 +71,8 @@ export default function SignupPage() {
       description: "You have been successfully registered.",
     });
 
-    // Redirect to the appointments page after a successful signup.
-    router.push("/appointments");
+    // Redirect to the home page after a successful signup.
+    router.push("/home");
   };
 
   return (
