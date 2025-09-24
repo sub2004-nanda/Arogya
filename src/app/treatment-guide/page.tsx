@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useTransition, useRef, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -10,101 +10,17 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTreatmentGuide } from "@/lib/actions";
-import { AlertCircle, BookHeart, Bot, Mic, MicOff } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { AlertCircle, BookHeart } from "lucide-react";
 
 interface GuideResult {
   guide?: string;
   error?: string;
 }
 
-// Add this type definition for SpeechRecognition
-interface SpeechRecognition extends EventTarget {
-    continuous: boolean;
-    interimResults: boolean;
-    lang: string;
-    start(): void;
-    stop(): void;
-    onresult: (event: any) => void;
-    onerror: (event: any) => void;
-    onend: () => void;
-}
-
-interface SpeechRecognitionStatic {
-    new(): SpeechRecognition;
-}
-
-declare global {
-    interface Window {
-        SpeechRecognition: SpeechRecognitionStatic;
-        webkitSpeechRecognition: SpeechRecognitionStatic;
-    }
-}
-
 export default function TreatmentGuidePage() {
   const [condition, setCondition] = useState("");
   const [result, setResult] = useState<GuideResult | null>(null);
   const [isPending, startTransition] = useTransition();
-  const { toast } = useToast();
-
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
-
-  useEffect(() => {
-    // Cleanup function to stop microphone when the component unmounts
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
-  }, []);
-
-  const handleMic = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-      return;
-    }
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      toast({
-        variant: "destructive",
-        title: "Browser Not Supported",
-        description: "Your browser does not support speech recognition.",
-      });
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognitionRef.current = recognition;
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      setCondition(transcript);
-    };
-
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
-       toast({
-        variant: "destructive",
-        title: "Recognition Error",
-        description: "An error occurred during speech recognition.",
-      });
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognition.start();
-    setIsListening(true);
-  };
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,25 +56,12 @@ export default function TreatmentGuidePage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="flex gap-2">
-                <div className="relative flex-grow">
-                    <Input
-                    placeholder="e.g., Hypertension..."
-                    value={condition}
-                    onChange={(e) => setCondition(e.target.value)}
-                    disabled={isPending}
-                    className="pr-12"
-                    />
-                    <Button
-                        type="button"
-                        variant={isListening ? "destructive" : "outline"}
-                        size="icon"
-                        onClick={handleMic}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-                        aria-label={isListening ? "Stop listening" : "Start listening"}
-                    >
-                        {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                    </Button>
-                </div>
+                <Input
+                  placeholder="e.g., Hypertension..."
+                  value={condition}
+                  onChange={(e) => setCondition(e.target.value)}
+                  disabled={isPending}
+                />
                 <Button type="submit" disabled={isPending || !condition.trim()}>
                   {isPending ? "Generating..." : "Get Guide"}
                 </Button>
@@ -203,7 +106,7 @@ export default function TreatmentGuidePage() {
                       <AlertTitle>Important Disclaimer</AlertTitle>
                       <AlertDescription>
                         This is an AI-generated guide and not a medical diagnosis. Please consult a qualified healthcare professional for any health concerns or before making any medical decisions.
-                      </Description>
+                      </AlertDescription>
                     </Alert>
                   </CardContent>
                 </Card>
