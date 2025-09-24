@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pill, ArrowLeft, MapPin } from "lucide-react";
+import { Pill, ArrowLeft, MapPin, ArrowRight } from "lucide-react";
 import { mockPharmacies, mockMedicineStock } from "@/lib/mock-data";
 
 
@@ -40,6 +40,10 @@ export default function PharmacyStockPage() {
     medicine.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const encodedAddress = encodeURIComponent(pharmacy.address);
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${encodedAddress}&output=embed`;
+  const mapLinkUrl = `https://maps.google.com/maps?q=${encodedAddress}`;
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -61,6 +65,32 @@ export default function PharmacyStockPage() {
               </p>
               <p className="mt-2 text-muted-foreground">Check available medicine stock below.</p>
             </div>
+
+            <Card className="mt-10">
+                <CardHeader>
+                    <CardTitle>Location</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="aspect-video w-full rounded-md overflow-hidden border">
+                       <iframe
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            scrolling="no"
+                            marginHeight={0}
+                            marginWidth={0}
+                            src={mapEmbedUrl}
+                            title={pharmacy.name}
+                            aria-label={pharmacy.name}
+                        ></iframe>
+                    </div>
+                     <Button asChild variant="outline" className="mt-4">
+                        <a href={mapLinkUrl} target="_blank" rel="noopener noreferrer">
+                            View on Google Maps <ArrowRight className="ml-2 h-4 w-4" />
+                        </a>
+                    </Button>
+                </CardContent>
+            </Card>
 
             <Card className="mt-10">
               <CardHeader>
