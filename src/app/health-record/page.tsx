@@ -127,7 +127,7 @@ export default function HealthRecordPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <FileText className="h-5 w-5" />
-                        Medical Records
+                        View Past Consultations
                     </CardTitle>
                     <CardDescription>Details from your past consultations.</CardDescription>
                   </CardHeader>
