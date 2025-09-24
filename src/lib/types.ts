@@ -10,6 +10,11 @@ export interface Appointment {
   type: 'in-person' | 'teleconsult';
   status: 'Scheduled' | 'Completed' | 'Cancelled';
   reason: string;
+  patientType?: 'myself' | 'family';
+  familyMemberId?: string;
+  age?: number;
+  gender?: string;
+  department?: string;
 }
 
 export interface FamilyMember {
