@@ -129,7 +129,7 @@ export default function SignupPage() {
                     <FormItem>
                       <FormLabel>Age</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 25" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} />
+                        <Input type="number" placeholder="e.g., 25" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : e.target.valueAsNumber)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
