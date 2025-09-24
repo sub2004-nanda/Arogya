@@ -1,6 +1,14 @@
 
 'use client';
 
+import { useState } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { format } from "date-fns";
+import { UserPlus, Calendar, Pill, ShieldCheck, User } from "lucide-react";
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,12 +16,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserPlus, Calendar, Pill, ShieldCheck, User } from "lucide-react";
-import { format } from "date-fns";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import type { FamilyMember } from "@/lib/types";
 
-// Mock Data - In a real app, this would come from a user's account data
-const mockFamilyMembers: FamilyMember[] = [
+
+const initialFamilyMembers: FamilyMember[] = [
   { id: "fm-1", name: "Ramesh Sharma", age: 68, gender: "male", relationship: "Father" },
   { id: "fm-2", name: "Sita Sharma", age: 65, gender: "female", relationship: "Mother" },
   { id: "fm-3", name: "Priya Sharma", age: 12, gender: "female", relationship: "Daughter" },
@@ -34,7 +45,44 @@ const mockVaccinations = [
   { id: "vac-2", memberName: "Priya Sharma", vaccine: "Tdap Booster", status: "Completed", dueDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)) },
 ];
 
+const addMemberSchema = z.object({
+  name: z.string().min(1, "Name is required."),
+  relationship: z.string().min(1, "Relationship is required."),
+  age: z.coerce.number().min(0, "Age must be a positive number."),
+  gender: z.enum(["male", "female", "other"], { required_error: "Gender is required." }),
+});
+
+type AddMemberFormValues = z.infer<typeof addMemberSchema>;
+
+
 export default function FamilyHealthPage() {
+    const { toast } = useToast();
+    const [familyMembers, setFamilyMembers] = useLocalStorage<FamilyMember[]>("familyMembers", initialFamilyMembers);
+    const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+
+    const form = useForm<AddMemberFormValues>({
+        resolver: zodResolver(addMemberSchema),
+        defaultValues: {
+            name: "",
+            relationship: "",
+            age: undefined,
+            gender: undefined,
+        },
+    });
+
+    function onAddMember(data: AddMemberFormValues) {
+        const newMember: FamilyMember = {
+            id: `fm-${Date.now()}`,
+            ...data,
+        };
+        setFamilyMembers(prev => [...prev, newMember]);
+        toast({
+            title: "Member Added",
+            description: `${data.name} has been added to your family profile.`,
+        });
+        form.reset();
+        setIsAddMemberOpen(false);
+    }
 
     const getInitials = (name: string) => {
         return name.split(' ').map(n => n[0]).join('');
@@ -58,13 +106,89 @@ export default function FamilyHealthPage() {
                 <CardHeader>
                    <div className="flex justify-between items-center">
                      <CardTitle className="flex items-center gap-2"><User className="text-primary"/> Family Members</CardTitle>
-                     <Button variant="outline"><UserPlus className="mr-2"/>Add Member</Button>
+                      <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
+                        <DialogTrigger asChild>
+                           <Button variant="outline"><UserPlus className="mr-2"/>Add Member</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add a New Family Member</DialogTitle>
+                                <DialogDescription>Enter the details below to add a new member to your profile.</DialogDescription>
+                            </DialogHeader>
+                             <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onAddMember)} className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                            <FormLabel>Full Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., Sunil Sharma" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                     <FormField
+                                        control={form.control}
+                                        name="relationship"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                            <FormLabel>Relationship</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., Son, Spouse" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="age"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                <FormLabel>Age</FormLabel>
+                                                <FormControl>
+                                                    <Input type="number" placeholder="e.g., 35" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="gender"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Gender</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl><SelectTrigger><SelectValue placeholder="Gender" /></SelectTrigger></FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="male">Male</SelectItem>
+                                                            <SelectItem value="female">Female</SelectItem>
+                                                            <SelectItem value="other">Other</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <DialogFooter>
+                                        <Button type="submit">Save Member</Button>
+                                    </DialogFooter>
+                                </form>
+                            </Form>
+                        </DialogContent>
+                      </Dialog>
                    </div>
                    <CardDescription>View and manage profiles for your family members.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {mockFamilyMembers.map(member => (
+                        {familyMembers.map(member => (
                             <Card key={member.id} className="p-4 flex items-center gap-4">
                                 <Avatar className="h-12 w-12">
                                     <AvatarImage src={`https://i.pravatar.cc/150?u=${member.id}`} />
