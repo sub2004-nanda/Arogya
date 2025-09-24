@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Stethoscope, Pill, CalendarPlus, Users, Megaphone } from 'lucide-react';
+import { Stethoscope, Pill, CalendarPlus, Users } from 'lucide-react';
 
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -28,16 +28,10 @@ const features = [
     icon: Pill,
   },
   {
-    title: 'Community Forum',
-    description: 'Connect with others and share experiences.',
+    title: 'Community & Health Hub',
+    description: 'Connect with others and stay informed on health topics.',
     href: '/community',
     icon: Users,
-  },
-  {
-    title: 'Health Awareness',
-    description: 'Stay informed about health campaigns.',
-    href: '/health-awareness',
-    icon: Megaphone,
   },
 ];
 

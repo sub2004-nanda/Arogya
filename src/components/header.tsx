@@ -9,7 +9,6 @@ const navLinks = [
   { href: "/appointments", label: "Appointments" },
   { href: "/pharmacies", label: "Pharmacies" },
   { href: "/community", label: "Community" },
-  { href: "/health-awareness", label: "Health Awareness" },
 ];
 
 export function Header() {
