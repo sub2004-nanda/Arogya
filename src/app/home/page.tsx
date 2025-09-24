@@ -26,12 +26,6 @@ const features = [
     link: "/symptom-checker",
   },
   {
-    icon: FileText,
-    title: "Health Records",
-    description: "View your medical history.",
-    link: "/health-record",
-  },
-  {
     icon: Video,
     title: "Video Consultation",
     description: "Connect with a doctor.",
