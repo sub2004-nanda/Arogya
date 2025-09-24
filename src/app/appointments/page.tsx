@@ -1,11 +1,12 @@
+
 "use client";
 
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, Trash2 } from "lucide-react";
+import { CalendarIcon, Trash2, User, Users } from "lucide-react";
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -16,44 +17,206 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import type { Appointment } from "@/lib/types";
+import type { Appointment, FamilyMember } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const appointmentSchema = z.object({
+  patientType: z.enum(["user", "family"]),
   patientName: z.string().min(2, "Name must be at least 2 characters."),
+  familyMemberId: z.string().optional(),
   age: z.coerce.number().min(0, "Age must be a positive number.").max(120),
   gender: z.enum(["male", "female", "other"]),
   appointmentDate: z.date({ required_error: "An appointment date is required." }),
   department: z.string().min(1, "Please select a department."),
+}).refine(data => {
+  if (data.patientType === 'family') {
+    return !!data.familyMemberId;
+  }
+  return true;
+}, {
+  message: "Please select a family member.",
+  path: ["familyMemberId"],
 });
+
 
 type AppointmentFormValues = z.infer<typeof appointmentSchema>;
 
 const departments = ["Cardiology", "Dermatology", "General Medicine", "Neurology", "Pediatrics"];
 
+// Mock family members data. In a real app, this would come from a database or a global state.
+const mockFamilyMembers: FamilyMember[] = [
+  { id: 'fm1', name: 'Jane Doe', age: 38, gender: 'female', relationship: 'Wife' },
+  { id: 'fm2', name: 'Sam Doe', age: 12, gender: 'male', relationship: 'Son' },
+  { id: 'fm3', name: 'Mary Doe', age: 8, gender: 'female', relationship: 'Daughter' },
+];
+
+function PatientDetailsFields({ control, familyMembers }: { control: any, familyMembers: FamilyMember[] }) {
+  const patientType = useWatch({ control, name: "patientType" });
+  const { setValue } = useFormContext<AppointmentFormValues>();
+
+  const handleFamilyMemberChange = (memberId: string) => {
+      const member = familyMembers.find(m => m.id === memberId);
+      if(member) {
+          setValue('patientName', member.name);
+          setValue('age', member.age);
+          setValue('gender', member.gender);
+          setValue('familyMemberId', member.id);
+      }
+  };
+  
+  return (
+    <>
+      <FormField
+        control={control}
+        name="patientType"
+        render={({ field }) => (
+          <FormItem className="col-span-full">
+            <FormLabel>Patient</FormLabel>
+            <FormControl>
+              <RadioGroup
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  if (value === 'user') {
+                      // Reset fields when switching to 'user'
+                      setValue('patientName', 'Me');
+                      setValue('age', 42); // Example user age
+                      setValue('gender', 'male'); // Example user gender
+                      setValue('familyMemberId', undefined);
+                  } else {
+                     // Clear fields for family member selection
+                     setValue('patientName', '');
+                     setValue('age', 0);
+                     setValue('gender', 'other');
+                  }
+                }}
+                defaultValue={field.value}
+                className="flex gap-4 items-center"
+              >
+                <FormItem className="flex items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <RadioGroupItem value="user" id="user" />
+                  </FormControl>
+                  <FormLabel htmlFor="user" className="font-normal flex items-center gap-2"><User/> Myself</FormLabel>
+                </FormItem>
+                <FormItem className="flex items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <RadioGroupItem value="family" id="family" />
+                  </FormControl>
+                  <FormLabel htmlFor="family" className="font-normal flex items-center gap-2"><Users/> Family Member</FormLabel>
+                </FormItem>
+              </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {patientType === 'family' && (
+        <FormField
+          control={control}
+          name="familyMemberId"
+          render={({ field }) => (
+            <FormItem className="col-span-full sm:col-span-1">
+              <FormLabel>Select Family Member</FormLabel>
+              <Select onValueChange={handleFamilyMemberChange} defaultValue={field.value}>
+                  <FormControl>
+                      <SelectTrigger><SelectValue placeholder="Select a family member" /></SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                      {familyMembers.map(member => (
+                          <SelectItem key={member.id} value={member.id}>
+                              {member.name} ({member.relationship})
+                          </SelectItem>
+                      ))}
+                  </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
+      {patientType === 'user' && (
+        <FormField
+            control={control}
+            name="patientName"
+            render={({ field }) => (
+                <FormItem className="hidden">
+                    <FormControl><Input {...field} /></FormControl>
+                </FormItem>
+            )}
+        />
+      )}
+
+      <FormField
+        control={control}
+        name="age"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Age</FormLabel>
+            <FormControl><Input type="number" placeholder="42" {...field} readOnly={patientType === 'family'} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="gender"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Gender</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value} disabled={patientType === 'family'}>
+              <FormControl><SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger></FormControl>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </>
+  );
+}
+
 export default function AppointmentsPage() {
   const { toast } = useToast();
   const [appointments, setAppointments] = useLocalStorage<Appointment[]>("appointments", []);
+  
+  // Using React state for family members for now. Could also be in local storage.
+  const [familyMembers] = useState<FamilyMember[]>(mockFamilyMembers);
 
   const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
-      patientName: "",
-      age: undefined,
+      patientType: "user",
+      patientName: "Me",
+      age: 42, // Example user age
+      gender: "male", // Example user gender
+      department: undefined,
     },
   });
 
+  const { control } = form;
+
   function onSubmit(data: AppointmentFormValues) {
+    const finalPatientName = data.patientType === 'user' ? "Myself" : data.patientName;
+
     const newAppointment: Appointment = {
       ...data,
+      patientName: finalPatientName,
       id: new Date().toISOString(),
     };
     setAppointments([...appointments, newAppointment]);
     toast({
       title: "Appointment Booked!",
-      description: `Your appointment for ${data.patientName} is confirmed.`,
+      description: `Your appointment for ${finalPatientName} is confirmed.`,
     });
     form.reset();
   }
@@ -86,49 +249,8 @@ export default function AppointmentsPage() {
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                      <FormField
-                        control={form.control}
-                        name="patientName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Patient Name</FormLabel>
-                            <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="age"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Age</FormLabel>
-                            <FormControl><Input type="number" placeholder="42" {...field} /></FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                      <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Gender</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger></FormControl>
-                              <SelectContent>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="female">Female</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <PatientDetailsFields control={control} familyMembers={familyMembers} />
+                      
                       <FormField
                         control={form.control}
                         name="department"
@@ -145,40 +267,40 @@ export default function AppointmentsPage() {
                           </FormItem>
                         )}
                       />
+
+                      <FormField
+                        control={form.control}
+                        name="appointmentDate"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Appointment Date</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                                  >
+                                    {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
-                    
-                    <FormField
-                      control={form.control}
-                      name="appointmentDate"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Appointment Date</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                                >
-                                  {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
                     <Button type="submit" className="w-full sm:w-auto" disabled={form.formState.isSubmitting}>
                       Book Appointment
@@ -220,3 +342,5 @@ export default function AppointmentsPage() {
     </div>
   );
 }
+
+    
