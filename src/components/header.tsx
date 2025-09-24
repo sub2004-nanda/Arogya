@@ -77,7 +77,7 @@ export function Header() {
         </div>
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
-          {user.role !== 'doctor' && (
+          {user.role !== 'doctor' && user.role !== 'pharmacy' && (
             <Button asChild variant="destructive">
               <Link href="/emergency"><Siren className="mr-2 h-4 w-4" />Emergency</Link>
             </Button>
