@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Logo } from "@/components/logo";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
@@ -27,7 +26,6 @@ import { ArrowLeft } from "lucide-react";
 const doctorSchema = z.object({
   name: z.string().min(1, "Name is required."),
   specialization: z.string().min(1, "Specialization is required."),
-  availability: z.string().min(1, "Please describe your availability."),
   registrationId: z.string().min(1, "Registration ID is required."),
   contact: z.string().regex(/^\d{10}$/, "Please enter a valid 10-digit mobile number."),
 });
@@ -118,19 +116,6 @@ export default function DoctorSignupPage() {
                       <FormLabel>Contact Number</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g. 9876543210" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="availability"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Availability</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="e.g. Mon-Fri, 9am - 5pm" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
