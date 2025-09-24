@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks/use-auth";
 const patientNavLinks = [
   { href: "/home", label: "Home" },
   { href: "/appointments", label: "Appointments" },
-  { href: "/symptom-checker", label: "Symptom Checker" },
+  { href: "/symptom-checker", label: "Voice-to-text bot" },
   { href: "/community", label: "Community Hub" },
   { href: "/pharmacies", label: "Pharmacies" },
 ];
