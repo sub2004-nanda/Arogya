@@ -1,6 +1,8 @@
+
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -10,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 
 const mockPharmacies = [
   {
+    id: "gupta-medical-hall",
     name: "Gupta Medical Hall",
     address: "Sadar Bazar, Nabha, Punjab",
     hours: "9:00 AM - 9:00 PM",
@@ -17,6 +20,7 @@ const mockPharmacies = [
     services: ["Delivery"],
   },
   {
+    id: "aggarwal-medicos",
     name: "Aggarwal Medicos",
     address: "Patiala Gate, Nabha, Punjab",
     hours: "8:30 AM - 10:00 PM",
@@ -24,6 +28,7 @@ const mockPharmacies = [
     services: ["24/7"],
   },
   {
+    id: "jindal-medical-store",
     name: "Jindal Medical Store",
     address: "Circular Road, Nabha, Punjab",
     hours: "10:00 AM - 8:00 PM",
@@ -31,6 +36,7 @@ const mockPharmacies = [
     services: [],
   },
   {
+    id: "sharma-pharmacy",
     name: "Sharma Pharmacy",
     address: "Near Bus Stand, Nabha, Punjab",
     hours: "9:00 AM - 8:30 PM",
@@ -38,6 +44,7 @@ const mockPharmacies = [
     services: ["Delivery"],
   },
   {
+    id: "singla-health-care",
     name: "Singla Health Care",
     address: "Bhavanigarh Road, Nabha, Punjab",
     hours: "8:00 AM - 11:00 PM",
@@ -78,33 +85,35 @@ export default function PharmaciesPage() {
 
             <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
               {filteredPharmacies.length > 0 ? (
-                filteredPharmacies.map((pharmacy, index) => (
-                  <Card key={index}>
-                    <CardHeader>
-                      <CardTitle>{pharmacy.name}</CardTitle>
-                      {pharmacy.services.length > 0 && (
-                        <div className="flex flex-wrap gap-2 pt-2">
-                            {pharmacy.services.map(service => (
-                                <Badge key={service} variant="secondary">{service}</Badge>
-                            ))}
+                filteredPharmacies.map((pharmacy) => (
+                  <Link href={`/pharmacies/${pharmacy.id}`} key={pharmacy.id} className="group">
+                    <Card className="h-full transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1">
+                      <CardHeader>
+                        <CardTitle>{pharmacy.name}</CardTitle>
+                        {pharmacy.services.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                              {pharmacy.services.map(service => (
+                                  <Badge key={service} variant="secondary">{service}</Badge>
+                              ))}
+                          </div>
+                        )}
+                      </CardHeader>
+                      <CardContent className="space-y-3 text-sm">
+                        <div className="flex items-start gap-3">
+                          <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
+                          <span>{pharmacy.address}</span>
                         </div>
-                      )}
-                    </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
-                      <div className="flex items-start gap-3">
-                        <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
-                        <span>{pharmacy.address}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Clock className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-                        <span>{pharmacy.hours}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Phone className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-                        <span>{pharmacy.phone}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        <div className="flex items-center gap-3">
+                          <Clock className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                          <span>{pharmacy.hours}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Phone className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                          <span>{pharmacy.phone}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))
               ) : (
                 <div className="col-span-full text-center py-10">
