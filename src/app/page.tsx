@@ -1,9 +1,7 @@
 
-
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
@@ -11,7 +9,7 @@ import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, Bot, Calendar, Loader2, Stethoscope, Pill } from "lucide-react";
+import { ArrowRight, Bot, Calendar, Home, LogOut, Stethoscope, Pill } from "lucide-react";
 import { Footer } from "@/components/footer";
 
 const features = [
@@ -43,27 +41,8 @@ const features = [
 
 
 export default function LandingPage() {
-  const { user } = useAuth();
-  const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState(true);
-
+  const { user, logout } = useAuth();
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-home');
-
-  useEffect(() => {
-    if (user) {
-      router.replace("/home");
-    } else {
-      setIsLoading(false);
-    }
-  }, [user, router]);
-
-  if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-background">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -73,12 +52,26 @@ export default function LandingPage() {
                     <Logo className="h-10 w-auto" />
                 </Link>
                 <div className="flex items-center gap-2">
-                    <Button asChild variant="ghost">
-                        <Link href="/login">Login</Link>
-                    </Button>
-                    <Button asChild>
-                        <Link href="/signup">Sign Up</Link>
-                    </Button>
+                  {user ? (
+                    <>
+                      <Button asChild>
+                        <Link href="/home"><Home className="mr-2"/>Dashboard</Link>
+                      </Button>
+                       <Button variant="ghost" size="icon" onClick={logout}>
+                          <LogOut className="h-4 w-4" />
+                          <span className="sr-only">Logout</span>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button asChild variant="ghost">
+                          <Link href="/login">Login</Link>
+                      </Button>
+                      <Button asChild>
+                          <Link href="/signup">Sign Up</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
             </div>
         </header>
