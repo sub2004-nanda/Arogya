@@ -9,49 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { MapPin, Clock, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const mockPharmacies = [
-  {
-    id: "gupta-medical-hall",
-    name: "Gupta Medical Hall",
-    address: "Sadar Bazar, Nabha, Punjab",
-    hours: "9:00 AM - 9:00 PM",
-    phone: "(555) 111-2222",
-    services: ["Delivery"],
-  },
-  {
-    id: "aggarwal-medicos",
-    name: "Aggarwal Medicos",
-    address: "Patiala Gate, Nabha, Punjab",
-    hours: "8:30 AM - 10:00 PM",
-    phone: "(555) 333-4444",
-    services: ["24/7"],
-  },
-  {
-    id: "jindal-medical-store",
-    name: "Jindal Medical Store",
-    address: "Circular Road, Nabha, Punjab",
-    hours: "10:00 AM - 8:00 PM",
-    phone: "(555) 555-6666",
-    services: [],
-  },
-  {
-    id: "sharma-pharmacy",
-    name: "Sharma Pharmacy",
-    address: "Near Bus Stand, Nabha, Punjab",
-    hours: "9:00 AM - 8:30 PM",
-    phone: "(555) 777-8888",
-    services: ["Delivery"],
-  },
-  {
-    id: "singla-health-care",
-    name: "Singla Health Care",
-    address: "Bhavanigarh Road, Nabha, Punjab",
-    hours: "8:00 AM - 11:00 PM",
-    phone: "(555) 999-0000",
-    services: ["24/7", "Delivery"],
-  },
-];
+import { mockPharmacies } from "@/lib/mock-data";
 
 export default function PharmaciesPage() {
   const [searchTerm, setSearchTerm] = useState("");

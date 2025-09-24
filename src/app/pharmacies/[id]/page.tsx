@@ -11,44 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pill, ArrowLeft } from "lucide-react";
+import { Pill, ArrowLeft, MapPin } from "lucide-react";
+import { mockPharmacies, mockMedicineStock } from "@/lib/mock-data";
 
-// Mock data - In a real app, this would come from a database
-const mockPharmacies = [
-  { id: "gupta-medical-hall", name: "Gupta Medical Hall" },
-  { id: "aggarwal-medicos", name: "Aggarwal Medicos" },
-  { id: "jindal-medical-store", name: "Jindal Medical Store" },
-  { id: "sharma-pharmacy", name: "Sharma Pharmacy" },
-  { id: "singla-health-care", name: "Singla Health Care" },
-];
-
-const mockMedicineStock: { [key: string]: { name: string; stock: string; type: string }[] } = {
-  "gupta-medical-hall": [
-    { name: "Paracetamol", stock: "In Stock", type: "Tablet" },
-    { name: "Cough Syrup", stock: "In Stock", type: "Syrup" },
-    { name: "Aspirin", stock: "Low Stock", type: "Tablet" },
-    { name: "Antacid", stock: "Out of Stock", type: "Liquid" },
-  ],
-  "aggarwal-medicos": [
-    { name: "Ibuprofen", stock: "In Stock", type: "Tablet" },
-    { name: "Band-Aids", stock: "In Stock", type: "Medical Supply" },
-    { name: "Vitamins", stock: "In Stock", type: "Capsule" },
-  ],
-  "jindal-medical-store": [
-    { name: "Paracetamol", stock: "In Stock", type: "Tablet" },
-    { name: "Allergy Pills", stock: "Out of Stock", type: "Tablet" },
-  ],
-  "sharma-pharmacy": [
-    { name: "Cough Syrup", stock: "In Stock", type: "Syrup" },
-    { name: "Pain Balm", stock: "Low Stock", type: "Ointment" },
-  ],
-  "singla-health-care": [
-    { name: "Paracetamol", stock: "In Stock", type: "Tablet" },
-    { name: "Ibuprofen", stock: "In Stock", type: "Tablet" },
-    { name: "Cough Syrup", stock: "In Stock", type: "Syrup" },
-    { name: "Antacid", stock: "In Stock", type: "Liquid" },
-  ],
-};
 
 function getStockStatusColor(stock: string) {
     switch (stock) {
@@ -91,7 +56,10 @@ export default function PharmacyStockPage() {
             </div>
             <div className="text-center">
               <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">{pharmacy.name}</h1>
-              <p className="mt-4 text-lg text-muted-foreground">Check available medicine stock.</p>
+              <p className="mt-4 text-lg text-muted-foreground flex items-center justify-center gap-2">
+                <MapPin className="h-5 w-5"/> {pharmacy.address}
+              </p>
+              <p className="mt-2 text-muted-foreground">Check available medicine stock below.</p>
             </div>
 
             <Card className="mt-10">
