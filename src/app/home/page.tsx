@@ -82,10 +82,15 @@ export default function HomePage() {
               <p className="mt-6 text-lg leading-8 text-foreground/80">
                 Your personal health dashboard. Here you can manage appointments, check symptoms, and explore health resources.
               </p>
-              <div className="mt-10 flex items-center gap-x-6">
+              <div className="mt-10 flex items-center gap-x-4">
                 <Button asChild size="lg">
                   <Link href="/appointments">
                     Book Appointment <ArrowRight className="ml-2" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="secondary">
+                  <Link href="/symptom-checker">
+                    Get Symptom Checker
                   </Link>
                 </Button>
               </div>
