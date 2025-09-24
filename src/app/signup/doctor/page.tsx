@@ -39,6 +39,12 @@ export default function DoctorSignupPage() {
 
   const form = useForm<DoctorFormValues>({
     resolver: zodResolver(doctorSchema),
+    defaultValues: {
+        name: "",
+        specialization: "",
+        registrationId: "",
+        contact: "",
+    }
   });
 
   const onSubmit = (data: DoctorFormValues) => {

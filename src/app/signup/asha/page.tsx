@@ -39,6 +39,12 @@ export default function AshaSignupPage() {
 
   const form = useForm<AshaFormValues>({
     resolver: zodResolver(ashaSchema),
+    defaultValues: {
+        name: "",
+        workerId: "",
+        village: "",
+        contact: "",
+    }
   });
 
   const onSubmit = (data: AshaFormValues) => {

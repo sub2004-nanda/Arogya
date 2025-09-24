@@ -44,9 +44,11 @@ export default function PatientSignupPage() {
     resolver: zodResolver(patientSchema),
     defaultValues: {
       name: "",
-      age: undefined,
+      age: 0,
       village: "",
       mobile: "",
+      gender: undefined,
+      language: undefined,
     },
   });
 
