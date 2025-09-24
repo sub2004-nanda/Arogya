@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,10 +60,12 @@ function getStockStatusColor(stock: string) {
 }
 
 
-export default function PharmacyStockPage({ params }: { params: { id: string } }) {
+export default function PharmacyStockPage() {
+  const params = useParams();
+  const pharmacyId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [searchTerm, setSearchTerm] = useState("");
-  const pharmacy = mockPharmacies.find((p) => p.id === params.id);
-  const stock = mockMedicineStock[params.id] || [];
+  const pharmacy = mockPharmacies.find((p) => p.id === pharmacyId);
+  const stock = pharmacyId ? mockMedicineStock[pharmacyId] || [] : [];
 
   if (!pharmacy) {
     notFound();
