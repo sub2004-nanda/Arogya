@@ -8,7 +8,7 @@ export interface Appointment {
   doctorSpecialty: string;
   appointmentDate: Date;
   type: 'in-person' | 'teleconsult';
-  status: 'Scheduled' | 'Completed' | 'Cancelled';
+  status: 'Scheduled' | 'Completed' | 'Cancelled' | 'Waiting';
   reason: string;
   patientType?: 'myself' | 'family';
   familyMemberId?: string;
@@ -19,6 +19,7 @@ export interface Appointment {
   doctorsNotes?: string;
   prescription?: string;
   testReports?: string;
+  priority?: 'Routine' | 'High Risk' | 'Emergency';
 }
 
 export interface FamilyMember {

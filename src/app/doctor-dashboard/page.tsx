@@ -28,11 +28,11 @@ const features = [
   },
   {
     icon: Users,
-    title: "My Patients",
-    description: "Access patient records and medical history.",
-    link: "#",
-    stat: "120 active",
-    cta: "View Patients",
+    title: "Patient Queue",
+    description: "Manage real-time and smart patient queues.",
+    link: "/doctor-dashboard/patient-queue",
+    stat: "12 waiting",
+    cta: "Manage Queue",
   },
   {
     icon: Video,
