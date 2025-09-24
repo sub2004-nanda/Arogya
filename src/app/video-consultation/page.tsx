@@ -10,14 +10,44 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Mic, MicOff, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen } from 'lucide-react';
+import { Video, Mic, MicOff, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen, FilePlus } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 
 interface Vitals {
   heartRate: number;
   bloodPressure: string;
   oxygenSaturation: number;
   temperature: number;
+}
+
+// Add this type definition for SpeechRecognition
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start(): void;
+    stop(): void;
+    onresult: (event: any) => void;
+    onerror: (event: any) => void;
+    onend: () => void;
+}
+
+interface SpeechRecognitionStatic {
+    new(): SpeechRecognition;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: SpeechRecognitionStatic;
+        webkitSpeechRecognition: SpeechRecognitionStatic;
+    }
+}
+
+const mockPatient = {
+    id: "PAT-VID-007",
+    name: "Ravi Kumar",
+    department: "General Physician"
 }
 
 export default function VideoConsultationPage() {
@@ -36,6 +66,11 @@ export default function VideoConsultationPage() {
     oxygenSaturation: 98,
     temperature: 98.6,
   });
+
+  const [isPrescriptionOpen, setIsPrescriptionOpen] = useState(false);
+  const [prescriptionText, setPrescriptionText] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -98,6 +133,9 @@ export default function VideoConsultationPage() {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
   }, [toast]);
   
@@ -155,7 +193,6 @@ export default function VideoConsultationPage() {
       description: "Your consultation has ended.",
     });
 
-    // Navigate back to the previous page
     router.back();
   };
 
@@ -171,18 +208,72 @@ export default function VideoConsultationPage() {
 
   const handleSaveNote = () => {
     if (!quickNote.trim()) return;
-
-    // In a real application, you would save this note to the patient's record.
     console.log("Saving note for patient:", quickNote);
-
     toast({
         title: "Note Saved!",
         description: "The note has been added to the patient's temporary record.",
     });
-    // Optionally clear the note after saving
-    // setQuickNote(""); 
   };
 
+  const handleMic = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast({
+        variant: "destructive",
+        title: "Browser Not Supported",
+        description: "Your browser does not support speech recognition.",
+      });
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(result => result[0])
+        .map(result => result.transcript)
+        .join('');
+      setPrescriptionText(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+       toast({
+        variant: "destructive",
+        title: "Recognition Error",
+        description: "An error occurred during speech recognition.",
+      });
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+    setIsListening(true);
+  };
+  
+  const handleSavePrescription = () => {
+    if (!prescriptionText.trim()) return;
+    console.log("Saving prescription for patient:", prescriptionText);
+    toast({
+        title: "Prescription Saved!",
+        description: "The prescription has been saved to the patient's record.",
+    });
+    setPrescriptionText("");
+    setIsPrescriptionOpen(false);
+  }
 
   const getStatusText = () => {
       if (isConnecting) return "Connecting...";
@@ -253,6 +344,44 @@ export default function VideoConsultationPage() {
                         {isMuted ? <MicOff className="mr-2" /> : <Mic className="mr-2" />}
                         {isMuted ? 'Unmute' : 'Mute'}
                     </Button>
+                    <Dialog open={isPrescriptionOpen} onOpenChange={setIsPrescriptionOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" size="lg" disabled={!isConnected}>
+                                <FilePlus className="mr-2" /> Write Prescription
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                            <DialogTitle>Create Prescription</DialogTitle>
+                            <DialogDescription>
+                                For patient: {mockPatient.name} (ID: {mockPatient.id}, Dept: {mockPatient.department})
+                            </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="relative">
+                                    <Textarea
+                                        placeholder="Start writing or use voice to text..."
+                                        className="min-h-[200px] resize-none pr-12"
+                                        value={prescriptionText}
+                                        onChange={(e) => setPrescriptionText(e.target.value)}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant={isListening ? "destructive" : "outline"}
+                                        size="icon"
+                                        onClick={handleMic}
+                                        className="absolute right-2 top-2"
+                                        aria-label={isListening ? "Stop dictating" : "Start dictating"}
+                                    >
+                                        {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                                    </Button>
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button type="button" onClick={handleSavePrescription} disabled={!prescriptionText.trim()}>Save Prescription</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                     <Button variant="destructive" size="lg" onClick={handleEndCall} disabled={isConnecting || !hasCameraPermission}>
                         <PhoneOff className="mr-2" /> End Call
                     </Button>
