@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, User, Users, Building, Heart, Brain, Bone } from "lucide-react";
+import { CalendarIcon, User, Users, Building, Heart, Brain, Bone, Baby, Layers, Venus } from "lucide-react";
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -51,6 +51,18 @@ const mockDoctors = {
     orthopedics: [
         { id: "dr-joshi-ortho", name: "Dr. Joshi" },
         { id: "dr-mehta-ortho", name: "Dr. Mehta" },
+    ],
+    pediatrics: [
+        { id: "dr-gupta-peds", name: "Dr. Gupta" },
+        { id: "dr-roy-peds", name: "Dr. Roy" },
+    ],
+    dermatology: [
+        { id: "dr-khan-derma", name: "Dr. Khan" },
+        { id: "dr-iyer-derma", name: "Dr. Iyer" },
+    ],
+    gynecology: [
+        { id: "dr-das-gyno", name: "Dr. Das" },
+        { id: "dr-rao-gyno", name: "Dr. Rao" },
     ]
 };
 
@@ -132,6 +144,9 @@ export default function AppointmentsPage() {
     cardiology: Heart,
     neurology: Brain,
     orthopedics: Bone,
+    pediatrics: Baby,
+    dermatology: Layers,
+    gynecology: Venus,
   };
 
   return (
