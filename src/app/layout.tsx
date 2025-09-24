@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'ArogyaSetu',
+  title: 'Arogya',
   description: 'A multilingual, low-bandwidth-first healthcare web platform.',
 };
 

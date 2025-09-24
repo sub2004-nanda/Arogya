@@ -24,7 +24,7 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
       <path d="M50 62 C46 58, 40 58, 40 52 C40 48, 44 46, 50 50 C56 46, 60 48, 60 52 C60 58, 54 58, 50 62 Z" fill="url(#heartGradient)" opacity="0.8" />
       <path d="M20 50 L25 50 L27 45 L29 55 L31 40 L33 60 L35 50 L40 50" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" opacity="0.6" />
       <path d="M60 50 L65 50 L67 45 L69 55 L71 40 L73 60 L75 50 L80 50" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" opacity="0.6" />
-      <text x="110" y="55" fontFamily="var(--font-headline), system-ui, sans-serif" fontSize="28" fontWeight="700" fill="url(#textGradient)">ArogyaSetu</text>
+      <text x="110" y="55" fontFamily="var(--font-headline), system-ui, sans-serif" fontSize="28" fontWeight="700" fill="url(#textGradient)">Arogya</text>
       <text x="110" y="75" fontFamily="var(--font-body), system-ui, sans-serif" fontSize="11" fontWeight="400" fill="hsl(var(--muted-foreground))" opacity="0.8">Your Health, Connected</text>
     </g>
   </svg>

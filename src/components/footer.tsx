@@ -11,7 +11,7 @@ export function Footer() {
             <Logo className="h-10 w-auto" />
           </div>
           <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} ArogyaSetu. All rights reserved.
+            &copy; {currentYear} Arogya. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">

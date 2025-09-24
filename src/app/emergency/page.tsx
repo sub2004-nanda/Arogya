@@ -121,7 +121,7 @@ export default function EmergencyPage() {
               </Card>
             </div>
             <p className="mt-8 text-center text-sm text-muted-foreground">
-                ArogyaSetu is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
+                Arogya is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
             </p>
           </div>
         </div>

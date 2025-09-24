@@ -74,7 +74,7 @@ export default function Home() {
               <div className="text-center lg:text-left">
                 <p className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">Your Health, Connected</p>
                 <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                  ArogyaSetu Healthcare Platform
+                  Arogya Healthcare Platform
                 </h1>
                 <p className="mt-6 text-lg leading-8 text-muted-foreground">
                   Access quality care, book appointments, check symptoms, and find pharmacies, even with low connectivity.
