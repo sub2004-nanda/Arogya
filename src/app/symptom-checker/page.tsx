@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
@@ -9,13 +10,37 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { checkSymptoms } from "@/lib/actions";
-import { AlertCircle, Bot, Camera, VideoOff } from "lucide-react";
+import { AlertCircle, Bot, Camera, Mic, MicOff, VideoOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface SymptomResult {
   potentialConditions?: string;
   error?: string;
 }
+
+// Add this type definition for SpeechRecognition
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start(): void;
+    stop(): void;
+    onresult: (event: any) => void;
+    onerror: (event: any) => void;
+    onend: () => void;
+}
+
+interface SpeechRecognitionStatic {
+    new(): SpeechRecognition;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: SpeechRecognitionStatic;
+        webkitSpeechRecognition: SpeechRecognitionStatic;
+    }
+}
+
 
 export default function SymptomCheckerPage() {
   const [symptoms, setSymptoms] = useState("");
@@ -30,14 +55,70 @@ export default function SymptomCheckerPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+
   useEffect(() => {
-    // Cleanup function to stop camera stream when the component unmounts
+    // Cleanup function to stop camera and microphone when the component unmounts
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
   }, []);
+
+  const handleMic = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast({
+        variant: "destructive",
+        title: "Browser Not Supported",
+        description: "Your browser does not support speech recognition.",
+      });
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(result => result[0])
+        .map(result => result.transcript)
+        .join('');
+      setSymptoms(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+       toast({
+        variant: "destructive",
+        title: "Recognition Error",
+        description: "An error occurred during speech recognition.",
+      });
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+    setIsListening(true);
+  };
+
 
   const enableCamera = async () => {
     if (streamRef.current) {
@@ -145,13 +226,26 @@ export default function SymptomCheckerPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Textarea
-                  placeholder="e.g., fever, cough, headache..."
-                  className="min-h-[120px] resize-none"
-                  value={symptoms}
-                  onChange={(e) => setSymptoms(e.target.value)}
-                  disabled={isPending}
-                />
+                <div className="relative">
+                  <Textarea
+                    placeholder="e.g., fever, cough, headache..."
+                    className="min-h-[120px] resize-none pr-12"
+                    value={symptoms}
+                    onChange={(e) => setSymptoms(e.target.value)}
+                    disabled={isPending}
+                  />
+                  <Button
+                    type="button"
+                    variant={isListening ? "destructive" : "outline"}
+                    size="icon"
+                    onClick={handleMic}
+                    className="absolute right-2 top-2"
+                    aria-label={isListening ? "Stop listening" : "Start listening"}
+                  >
+                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  </Button>
+                </div>
+
                  <Card>
                   <CardHeader>
                     <CardTitle>Visual Analysis (Optional)</CardTitle>
@@ -261,3 +355,5 @@ export default function SymptomCheckerPage() {
     </div>
   );
 }
+
+    

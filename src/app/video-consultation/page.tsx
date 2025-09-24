@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Mic, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen } from 'lucide-react';
+import { Video, Mic, MicOff, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 
 interface Vitals {
@@ -29,6 +29,7 @@ export default function VideoConsultationPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [quickNote, setQuickNote] = useState("");
+  const [isMuted, setIsMuted] = useState(false);
   const [vitals, setVitals] = useState<Vitals>({
     heartRate: 70,
     bloodPressure: '120/80',
@@ -128,7 +129,7 @@ export default function VideoConsultationPage() {
     const interval = setInterval(() => {
       setVitals({
         heartRate: Math.floor(Math.random() * (90 - 65 + 1) + 65), // Random HR between 65 and 90
-        bloodPressure: `${Math.floor(Math.random() * (125 - 115 + 1) + 115)}/${Math.floor(Math.random() * (85 - 75 + 1) + 75)}`,
+        bloodPressure: `${''}${Math.floor(Math.random() * (125 - 115 + 1) + 115)}/${''}${Math.floor(Math.random() * (85 - 75 + 1) + 75)}`,
         oxygenSaturation: Math.floor(Math.random() * (100 - 95 + 1) + 95), // Random O2 between 95 and 100
         temperature: parseFloat((Math.random() * (99.0 - 98.0) + 98.0).toFixed(1)),
       });
@@ -156,6 +157,16 @@ export default function VideoConsultationPage() {
 
     // Navigate back to the previous page
     router.back();
+  };
+
+  const handleToggleMute = () => {
+    if (streamRef.current) {
+        const audioTracks = streamRef.current.getAudioTracks();
+        if (audioTracks.length > 0) {
+            audioTracks[0].enabled = !audioTracks[0].enabled;
+            setIsMuted(!audioTracks[0].enabled);
+        }
+    }
   };
 
   const handleSaveNote = () => {
@@ -238,8 +249,9 @@ export default function VideoConsultationPage() {
                 </Card>
 
                  <div className="mt-4 flex justify-center gap-4">
-                    <Button variant="outline" size="lg" disabled={!isConnected}>
-                        <Mic className="mr-2" /> Mute
+                    <Button variant="outline" size="lg" disabled={!isConnected} onClick={handleToggleMute}>
+                        {isMuted ? <MicOff className="mr-2" /> : <Mic className="mr-2" />}
+                        {isMuted ? 'Unmute' : 'Mute'}
                     </Button>
                     <Button variant="destructive" size="lg" onClick={handleEndCall} disabled={isConnecting || !hasCameraPermission}>
                         <PhoneOff className="mr-2" /> End Call
@@ -317,3 +329,5 @@ export default function VideoConsultationPage() {
     </div>
   );
 }
+
+    
