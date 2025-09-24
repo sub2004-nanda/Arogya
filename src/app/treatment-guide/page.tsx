@@ -197,13 +197,13 @@ export default function TreatmentGuidePage() {
                     </div>
                   </CardHeader>
                   <CardContent className="prose prose-sm max-w-none text-foreground">
-                    <p className="whitespace-pre-wrap">{result.guide}</p>
+                    <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: result.guide || "" }}/>
                     <Alert className="mt-6">
                       <AlertCircle className="h-4 w-4" />
                       <AlertTitle>Important Disclaimer</AlertTitle>
                       <AlertDescription>
                         This is an AI-generated guide and not a medical diagnosis. Please consult a qualified healthcare professional for any health concerns or before making any medical decisions.
-                      </AlertDescription>
+                      </Description>
                     </Alert>
                   </CardContent>
                 </Card>
@@ -216,5 +216,3 @@ export default function TreatmentGuidePage() {
     </div>
   );
 }
-
-    

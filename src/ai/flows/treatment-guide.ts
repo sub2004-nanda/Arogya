@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -10,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {marked} from 'marked';
 
 const TreatmentGuideInputSchema = z.object({
   condition: z
@@ -21,7 +23,7 @@ export type TreatmentGuideInput = z.infer<typeof TreatmentGuideInputSchema>;
 const TreatmentGuideOutputSchema = z.object({
   guide: z
     .string()
-    .describe('A general treatment guide for the specified condition.'),
+    .describe('A general treatment guide for the specified condition, formatted as markdown.'),
 });
 export type TreatmentGuideOutput = z.infer<typeof TreatmentGuideOutputSchema>;
 
@@ -35,7 +37,9 @@ const prompt = ai.definePrompt({
   output: {schema: TreatmentGuideOutputSchema},
   prompt: `You are an expert medical AI providing a general treatment guide for a specified condition.
 
-  Your response should be informative and easy to understand for a general audience. It MUST include a clear and prominent disclaimer that this is not a substitute for professional medical advice.
+  Your response should be informative and easy to understand for a general audience.
+  Format your response using Markdown, including headings, bold text, and lists where appropriate.
+  You MUST include a clear and prominent disclaimer that this is not a substitute for professional medical advice.
 
   Condition: {{{condition}}}
   
@@ -50,6 +54,7 @@ const treatmentGuideFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    const htmlGuide = marked.parse(output!.guide);
+    return { guide: htmlGuide as string };
   }
 );
