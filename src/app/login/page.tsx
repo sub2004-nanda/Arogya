@@ -53,8 +53,9 @@ export default function LoginPage() {
     // In a real app, you'd handle authentication here.
     console.log("Login data:", data);
 
-    // Simulate login
-    login(data.email);
+    // Simulate login by just using part of the email as name
+    const name = data.email.split('@')[0];
+    login(name, data.email);
 
     toast({
       title: "Login Successful",

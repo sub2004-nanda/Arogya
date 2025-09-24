@@ -70,7 +70,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mb-12">
             <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
-              Welcome back, {user?.email}!
+              Welcome back, {user?.name}!
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
               Your personal health dashboard. What would you like to do today?

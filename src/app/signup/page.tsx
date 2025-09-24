@@ -64,7 +64,7 @@ export default function SignupPage() {
     console.log("Signup data:", data);
 
     // For now, we'll just log them in directly
-    login(data.email, data.role);
+    login(data.name, data.email, data.role);
 
     toast({
       title: "Account Created!",
