@@ -58,7 +58,11 @@ export default function LoginPage() {
     // In a real app, you'd handle authentication here.
     console.log("Login data:", data);
 
-    const name = data.email.split('@')[0];
+    let name = data.email.split('@')[0];
+    if (data.role === 'doctor') {
+        name = "Dr. Ankit";
+    }
+
     login(name, data.email, data.role);
 
     toast({
