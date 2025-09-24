@@ -14,7 +14,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { Calendar, Users, Video, ArrowRight, NotebookPen, Bot, BarChart4 } from "lucide-react";
+import { Calendar, Users, Video, ArrowRight, NotebookPen, Bot, BarChart4, QrCode } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const features = [
@@ -41,6 +41,14 @@ const features = [
     link: "/doctor-dashboard/ai-insights",
     stat: "Review",
     cta: "Analyze",
+  },
+  {
+    icon: QrCode,
+    title: "QR Record Access",
+    description: "Scan a patient's QR to quickly access their records.",
+    link: "/doctor-dashboard/qr-scanner",
+    stat: "Offline",
+    cta: "Scan QR Code",
   },
   {
     icon: BarChart4,
@@ -112,7 +120,7 @@ export default function DoctorDashboardPage() {
                     Everything you need for a productive day, right at your fingertips.
                 </p>
             </div>
-            <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {features.map((feature) => (
                 <Card key={feature.title} className="flex flex-col text-left transition-shadow hover:shadow-xl">
                     <CardHeader>

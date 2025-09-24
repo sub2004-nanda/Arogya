@@ -23,7 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getPatientRiskSummary } from '@/lib/actions';
-import { AlertCircle, Bot, Activity } from 'lucide-react';
+import { AlertCircle, Bot, Activity, Loader2 } from 'lucide-react';
 import type { Appointment } from '@/lib/types';
 import { format } from 'date-fns';
 
