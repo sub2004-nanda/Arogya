@@ -1,5 +1,12 @@
 import Link from 'next/link';
-import { Stethoscope, Pill, CalendarPlus, Users } from 'lucide-react';
+import {
+  Stethoscope,
+  Pill,
+  CalendarPlus,
+  Users,
+  HeartPulse,
+  Contact,
+} from 'lucide-react';
 
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -20,6 +27,18 @@ const features = [
     description: 'Schedule a consultation with a doctor.',
     href: '/appointments',
     icon: CalendarPlus,
+  },
+  {
+    title: 'Health Records',
+    description: 'View and manage your health records.',
+    href: '/health-record',
+    icon: HeartPulse,
+  },
+  {
+    title: 'Family Health Profile',
+    description: 'Manage health profiles for your family.',
+    href: '/family-health',
+    icon: Contact,
   },
   {
     title: 'Find a Pharmacy',
