@@ -5,7 +5,7 @@ export const mockPharmacies = [
     name: "Gupta Medical Hall",
     address: "Shop No. 12, Sadar Bazar, Near Civil Hospital, Nabha, Punjab 147201",
     hours: "9:00 AM - 9:00 PM",
-    phone: "(555) 111-2222",
+    phone: "98765 43210",
     services: ["Delivery"],
   },
   {
@@ -13,7 +13,7 @@ export const mockPharmacies = [
     name: "Aggarwal Medicos",
     address: "Patiala Gate, Opposite Nabha Medical College, Nabha, Punjab 147201",
     hours: "8:30 AM - 10:00 PM",
-    phone: "(555) 333-4444",
+    phone: "98765 43211",
     services: ["24/7"],
   },
   {
@@ -21,7 +21,7 @@ export const mockPharmacies = [
     name: "Jindal Medical Store",
     address: "Circular Road, Near Fountain Chowk, Nabha, Punjab 147201",
     hours: "10:00 AM - 8:00 PM",
-    phone: "(555) 555-6666",
+    phone: "98765 43212",
     services: [],
   },
   {
@@ -29,7 +29,7 @@ export const mockPharmacies = [
     name: "Sharma Pharmacy",
     address: "Near Old Bus Stand, A.C. Market, Nabha, Punjab 147201",
     hours: "9:00 AM - 8:30 PM",
-    phone: "(555) 777-8888",
+    phone: "98765 43213",
     services: ["Delivery"],
   },
   {
@@ -37,7 +37,7 @@ export const mockPharmacies = [
     name: "Singla Health Care",
     address: "Bhavanigarh Road, Model Town, Nabha, Punjab 147201",
     hours: "8:00 AM - 11:00 PM",
-    phone: "(555) 999-0000",
+    phone: "98765 43214",
     services: ["24/7", "Delivery"],
   },
 ];
