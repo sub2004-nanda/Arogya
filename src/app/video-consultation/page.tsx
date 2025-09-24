@@ -107,7 +107,7 @@ export default function VideoConsultationPage() {
             setIsConnected(true);
             toast({
                 title: "Connected!",
-                description: "You are now connected with Dr. Anand.",
+                description: "You are now connected with Dr. Ankit.",
             });
         }, 3000);
     } else if(hasCameraPermission === false) {
@@ -178,11 +178,11 @@ export default function VideoConsultationPage() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <Avatar>
-                                    <AvatarImage src="https://picsum.photos/seed/doc1/100/100" alt="Dr. Anand" />
+                                    <AvatarImage src="https://picsum.photos/seed/doc1/100/100" alt="Dr. Ankit" />
                                     <AvatarFallback>DA</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <CardTitle className="text-xl">Dr. Anand</CardTitle>
+                                    <CardTitle className="text-xl">Dr. Ankit</CardTitle>
                                     <CardDescription>General Physician</CardDescription>
                                 </div>
                             </div>
