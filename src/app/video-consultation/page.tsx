@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Video, Mic, MicOff, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen, FilePlus } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import type { Appointment } from '@/lib/types';
 
 interface Vitals {
   heartRate: number;
@@ -71,6 +73,8 @@ export default function VideoConsultationPage() {
   const [prescriptionText, setPrescriptionText] = useState("");
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  const [appointments, setAppointments] = useLocalStorage<Appointment[]>("appointments", []);
 
   useEffect(() => {
     let isMounted = true;
@@ -266,10 +270,27 @@ export default function VideoConsultationPage() {
   
   const handleSavePrescription = () => {
     if (!prescriptionText.trim()) return;
-    console.log("Saving prescription for patient:", prescriptionText);
+    
+    const newAppointment: Appointment = {
+      id: `APT-VID-${Date.now()}`,
+      patientName: mockPatient.name,
+      doctorId: 'dr-ankit',
+      doctorName: 'Dr. Ankit',
+      doctorSpecialty: mockPatient.department,
+      appointmentDate: new Date(),
+      type: 'teleconsult',
+      status: 'Completed',
+      reason: 'Video Consultation',
+      diagnosis: 'Teleconsultation',
+      doctorsNotes: quickNote || 'Notes taken during video call.',
+      prescription: prescriptionText,
+    };
+
+    setAppointments(prev => [...prev, newAppointment]);
+
     toast({
         title: "Prescription Saved!",
-        description: "The prescription has been saved to the patient's record.",
+        description: `The prescription for ${mockPatient.name} has been saved to their health record.`,
     });
     setPrescriptionText("");
     setIsPrescriptionOpen(false);
