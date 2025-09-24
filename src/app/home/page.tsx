@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { HealthTips } from "@/components/health-tips";
@@ -18,48 +18,36 @@ const features = [
     title: "Book an Appointment",
     description: "Schedule consultations.",
     link: "/appointments",
-    bg: "bg-blue-100",
-    iconColor: "text-blue-600",
   },
   {
     icon: Bot,
     title: "AI Symptom Checker",
     description: "Get instant AI insights.",
     link: "/symptom-checker",
-    bg: "bg-purple-100",
-    iconColor: "text-purple-600",
   },
   {
     icon: Video,
     title: "Video Consultation",
     description: "Connect with a doctor.",
     link: "/video-consultation",
-    bg: "bg-green-100",
-    iconColor: "text-green-600",
   },
   {
     icon: Pill,
     title: "Find Pharmacies",
     description: "Locate nearby pharmacies.",
     link: "/pharmacies",
-    bg: "bg-red-100",
-    iconColor: "text-red-600",
   },
   {
     icon: Users,
     title: "Family Health",
     description: "Manage family profiles.",
     link: "/family-health",
-    bg: "bg-yellow-100",
-    iconColor: "text-yellow-600",
   },
   {
     icon: HeartHandshake,
     title: "Community Hub",
     description: "Health schemes & info.",
     link: "/community",
-    bg: "bg-teal-100",
-    iconColor: "text-teal-600",
   },
 ];
 
@@ -113,19 +101,19 @@ export default function HomePage() {
                         <h2 className="font-headline text-3xl font-bold tracking-tight mb-8">What would you like to do?</h2>
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
                             {features.map((feature) => (
-                            <Link href={feature.link} key={feature.title} className="group">
-                                <Card className="h-full transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl">
-                                <CardHeader>
-                                    <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg ${feature.bg}`}>
-                                    <feature.icon className={`h-6 w-6 ${feature.iconColor}`} />
-                                    </div>
-                                    <CardTitle>{feature.title}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-sm text-muted-foreground">{feature.description}</p>
-                                </CardContent>
-                                </Card>
-                            </Link>
+                                <Link href={feature.link} key={feature.title} className="group">
+                                    <Card className="flex flex-col h-full text-left hover:shadow-lg transition-shadow">
+                                        <CardHeader>
+                                            <div className="bg-primary/10 p-3 rounded-lg w-fit">
+                                                <feature.icon className="h-6 w-6 text-primary" />
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent className="flex flex-col flex-grow">
+                                            <CardTitle className="text-xl font-semibold">{feature.title}</CardTitle>
+                                            <p className="mt-2 text-muted-foreground flex-grow">{feature.description}</p>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
                             ))}
                         </div>
                     </div>
