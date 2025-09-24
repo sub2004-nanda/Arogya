@@ -15,6 +15,12 @@ const AISymptomCheckInputSchema = z.object({
   symptoms: z
     .string()
     .describe('The symptoms entered by the patient.'),
+  photoDataUri: z
+    .string()
+    .optional()
+    .describe(
+      "An optional photo of the symptom, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
 });
 export type AISymptomCheckInput = z.infer<typeof AISymptomCheckInputSchema>;
 
@@ -35,9 +41,12 @@ const prompt = ai.definePrompt({
   output: {schema: AISymptomCheckOutputSchema},
   prompt: `You are a helpful AI assistant that suggests potential conditions based on the symptoms entered by a patient.
 
-Please provide a list of potential conditions based on the following symptoms:
+Please provide a list of potential conditions based on the following information:
 
 Symptoms: {{{symptoms}}}
+{{#if photoDataUri}}
+Photo: {{media url=photoDataUri}}
+{{/if}}
 
 Potential Conditions:`,
 });

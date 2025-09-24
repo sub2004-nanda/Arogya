@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { checkSymptoms } from "@/lib/actions";
-import { AlertCircle, Bot } from "lucide-react";
+import { AlertCircle, Bot, Camera, Video, VideoOff } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface SymptomResult {
   potentialConditions?: string;
@@ -20,13 +21,83 @@ export default function SymptomCheckerPage() {
   const [symptoms, setSymptoms] = useState("");
   const [result, setResult] = useState<SymptomResult | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [isCameraEnabled, setIsCameraEnabled] = useState(false);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    return () => {
+      // Stop camera stream when component unmounts
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
+  const enableCamera = async () => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+        setHasCameraPermission(true);
+        setIsCameraEnabled(true);
+      } catch (error) {
+        console.error("Error accessing camera:", error);
+        setHasCameraPermission(false);
+        toast({
+          variant: "destructive",
+          title: "Camera Access Denied",
+          description: "Please enable camera permissions in your browser settings.",
+        });
+      }
+    } else {
+        setHasCameraPermission(false);
+        toast({
+          variant: "destructive",
+          title: "Camera Not Supported",
+          description: "Your browser does not support camera access.",
+        });
+    }
+  };
+
+  const disableCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setIsCameraEnabled(false);
+  };
+
+  const takePicture = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        const dataUrl = canvas.toDataURL("image/jpeg");
+        setCapturedImage(dataUrl);
+        disableCamera();
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!symptoms.trim()) return;
+    if (!symptoms.trim() && !capturedImage) return;
 
     startTransition(async () => {
-      const response = await checkSymptoms({ symptoms });
+      const response = await checkSymptoms({ symptoms, photoDataUri: capturedImage || undefined });
       setResult(response);
     });
   };
@@ -41,7 +112,7 @@ export default function SymptomCheckerPage() {
               AI Symptom Checker
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              Describe your symptoms, and our AI will provide you with potential insights.
+              Describe your symptoms and/or provide a photo, and our AI will provide you with potential insights.
             </p>
           </div>
 
@@ -61,7 +132,55 @@ export default function SymptomCheckerPage() {
                   onChange={(e) => setSymptoms(e.target.value)}
                   disabled={isPending}
                 />
-                <Button type="submit" disabled={isPending || !symptoms.trim()} className="w-full">
+                 <Card>
+                  <CardHeader>
+                    <CardTitle>Visual Analysis (Optional)</CardTitle>
+                    <CardDescription>
+                      Use your camera to provide a photo of the symptom.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {!isCameraEnabled && !capturedImage && (
+                      <Button onClick={enableCamera} type="button" variant="outline">
+                        <Camera className="mr-2" /> Start Camera
+                      </Button>
+                    )}
+                     {isCameraEnabled && (
+                        <div className="space-y-4">
+                            <video ref={videoRef} className="w-full aspect-video rounded-md bg-muted" autoPlay muted playsInline />
+                            <div className="flex gap-2">
+                                <Button onClick={takePicture} type="button">
+                                    <Camera className="mr-2" /> Capture
+                                </Button>
+                                <Button onClick={disableCamera} type="button" variant="ghost">
+                                    <VideoOff className="mr-2" /> Stop Camera
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                    {hasCameraPermission === false && (
+                       <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Camera Access Denied</AlertTitle>
+                        <AlertDescription>
+                          Please enable camera permissions in your browser settings to use this feature.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    {capturedImage && (
+                      <div className="space-y-4">
+                        <p>Photo captured:</p>
+                        <img src={capturedImage} alt="Symptom" className="rounded-md max-h-60" />
+                        <Button onClick={() => setCapturedImage(null)} type="button" variant="outline">
+                          Remove Photo
+                        </Button>
+                      </div>
+                    )}
+                    <canvas ref={canvasRef} className="hidden" />
+                  </CardContent>
+                </Card>
+
+                <Button type="submit" disabled={isPending || (!symptoms.trim() && !capturedImage) } className="w-full">
                   {isPending ? "Analyzing..." : "Check Symptoms"}
                 </Button>
               </form>
