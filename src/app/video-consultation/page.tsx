@@ -35,27 +35,37 @@ export default function VideoConsultationPage() {
   });
 
   useEffect(() => {
+    let isMounted = true;
+
     const getCameraPermission = async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (!isMounted) return;
         setHasCameraPermission(false);
         toast({
             variant: 'destructive',
             title: 'Unsupported Browser',
             description: 'Your browser does not support video consultations.',
         });
+        setIsConnecting(false);
         return;
       }
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        if (!isMounted) {
+            stream.getTracks().forEach(track => track.stop());
+            return;
+        }
         streamRef.current = stream;
         setHasCameraPermission(true);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
+        if (!isMounted) return;
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
+        setIsConnecting(false);
 
         let title = 'Camera Access Denied';
         let description = 'Please enable camera and microphone permissions in your browser settings to use video consultation.';
@@ -80,25 +90,36 @@ export default function VideoConsultationPage() {
 
     getCameraPermission();
 
-    const connectionTimeout = setTimeout(() => {
-        setIsConnecting(false);
-        if (hasCameraPermission !== false) {
+    return () => {
+      isMounted = false;
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [toast]);
+  
+  useEffect(() => {
+    let connectionTimeout: NodeJS.Timeout;
+
+    if (hasCameraPermission) {
+        connectionTimeout = setTimeout(() => {
+            setIsConnecting(false);
             setIsConnected(true);
             toast({
                 title: "Connected!",
                 description: "You are now connected with Dr. Anand.",
             });
-        }
-    }, 3000);
+        }, 3000);
+    } else if(hasCameraPermission === false) {
+        setIsConnecting(false);
+        setIsConnected(false);
+    }
 
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
       clearTimeout(connectionTimeout);
     };
   }, [hasCameraPermission, toast]);
-  
+
   useEffect(() => {
     if (!isConnected) return;
 
@@ -135,6 +156,13 @@ export default function VideoConsultationPage() {
     router.back();
   };
 
+  const getStatusText = () => {
+      if (isConnecting) return "Connecting...";
+      if (isConnected) return "Connected";
+      if (hasCameraPermission === false) return "Connection Failed";
+      return "Idle";
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -159,12 +187,12 @@ export default function VideoConsultationPage() {
                                 </div>
                             </div>
                             <div className="text-sm text-muted-foreground">
-                               {isConnected ? "Connected" : isConnecting ? "Connecting..." : "Failed"}
+                               {getStatusText()}
                             </div>
                         </div>
                     </CardHeader>
                   <CardContent className="p-0 relative aspect-video bg-muted flex items-center justify-center">
-                     {isConnecting && !isConnected && (
+                     {isConnecting && (
                         <div className="text-center">
                             <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
                             <p className="mt-4 text-muted-foreground">Finding an available doctor...</p>
@@ -176,12 +204,12 @@ export default function VideoConsultationPage() {
                             <p className="absolute bottom-4">Doctor's video feed</p>
                         </div>
                      )}
-                     {hasCameraPermission === false && (
+                     {hasCameraPermission === false && !isConnecting && (
                          <Alert variant="destructive" className="m-4">
                             <Video className="h-4 w-4" />
-                            <AlertTitle>Camera Required</AlertTitle>
+                            <AlertTitle>Camera or Microphone Issue</AlertTitle>
                             <AlertDescription>
-                            Camera access is required for video consultation. Please enable it in your browser settings.
+                            Could not access camera or microphone. Please ensure they are connected and that you've granted permission in your browser settings.
                             </AlertDescription>
                         </Alert>
                      )}
@@ -196,7 +224,7 @@ export default function VideoConsultationPage() {
                     <Button variant="outline" size="lg" disabled={!isConnected}>
                         <Mic className="mr-2" /> Mute
                     </Button>
-                    <Button variant="destructive" size="lg" onClick={handleEndCall} disabled={!isConnected}>
+                    <Button variant="destructive" size="lg" onClick={handleEndCall} disabled={isConnecting || !hasCameraPermission}>
                         <PhoneOff className="mr-2" /> End Call
                     </Button>
                 </div>
