@@ -60,7 +60,8 @@ interface SummaryResult {
 export default function HealthRecordPage() {
   const { user } = useAuth();
   const [appointments] = useLocalStorage<Appointment[]>("appointments", []);
-  const [mockUpcomingAppointments, setMockUpcomingAppointments] = useState<Appointment[]>([]);
+  const [allUpcomingAppointments, setAllUpcomingAppointments] = useState<Appointment[]>([]);
+  const [allPastAppointments, setAllPastAppointments] = useState<Appointment[]>([]);
 
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const [summaryResult, setSummaryResult] = useState<SummaryResult | null>(null);
@@ -68,13 +69,13 @@ export default function HealthRecordPage() {
 
   useEffect(() => {
     // This logic is moved inside useEffect to prevent hydration errors
-    // by ensuring dynamic dates are generated only on the client.
+    // by ensuring dynamic dates are generated and filtered only on the client.
     const getFutureDate = (days: number) => {
         const date = new Date();
         date.setDate(date.getDate() + days);
         return date;
     }
-    setMockUpcomingAppointments([
+    const mockUpcomingAppointments = [
         {
             id: 'mock-upcoming-1',
             patientName: 'Anita Sharma',
@@ -97,20 +98,24 @@ export default function HealthRecordPage() {
             status: 'Scheduled',
             reason: 'Follow-up consultation',
         },
-    ]);
-  }, []);
+    ];
 
-  const upcomingFromStorage = appointments
-    .filter(a => new Date(a.appointmentDate) >= new Date());
-    
-  const allUpcomingAppointments = [...mockUpcomingAppointments, ...upcomingFromStorage]
-    .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime());
-    
-  const pastAppointmentsFromStorage = appointments
-    .filter(a => new Date(a.appointmentDate) < new Date())
-    .sort((a, b) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime());
+    const upcomingFromStorage = appointments
+      .filter(a => new Date(a.appointmentDate) >= new Date());
+      
+    const combinedUpcoming = [...mockUpcomingAppointments, ...upcomingFromStorage]
+      .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime());
+      
+    const pastAppointmentsFromStorage = appointments
+      .filter(a => new Date(a.appointmentDate) < new Date());
 
-  const allPastAppointments = [...mockPastAppointments, ...pastAppointmentsFromStorage];
+    const combinedPast = [...mockPastAppointments, ...pastAppointmentsFromStorage]
+        .sort((a, b) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime());
+    
+    setAllUpcomingAppointments(combinedUpcoming);
+    setAllPastAppointments(combinedPast);
+
+  }, [appointments]);
 
 
   const getStatusVariant = (status: string): "default" | "secondary" | "destructive" => {
