@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Mic, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer } from 'lucide-react';
+import { Video, Mic, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Vitals {
   heartRate: number;
@@ -27,6 +28,7 @@ export default function VideoConsultationPage() {
   const [isConnected, setIsConnected] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const [quickNote, setQuickNote] = useState("");
   const [vitals, setVitals] = useState<Vitals>({
     heartRate: 70,
     bloodPressure: '120/80',
@@ -156,6 +158,21 @@ export default function VideoConsultationPage() {
     router.back();
   };
 
+  const handleSaveNote = () => {
+    if (!quickNote.trim()) return;
+
+    // In a real application, you would save this note to the patient's record.
+    console.log("Saving note for patient:", quickNote);
+
+    toast({
+        title: "Note Saved!",
+        description: "The note has been added to the patient's temporary record.",
+    });
+    // Optionally clear the note after saving
+    // setQuickNote(""); 
+  };
+
+
   const getStatusText = () => {
       if (isConnecting) return "Connecting...";
       if (isConnected) return "Connected";
@@ -230,7 +247,7 @@ export default function VideoConsultationPage() {
                 </div>
 
               </div>
-              <div className="md:col-span-1">
+              <div className="md:col-span-1 space-y-8">
                 <Card className="flex h-full flex-col">
                   <CardHeader>
                     <CardTitle>Live Vitals</CardTitle>
@@ -266,6 +283,29 @@ export default function VideoConsultationPage() {
                         </div>
                     </div>
                   </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><NotebookPen/> Quick Notes</CardTitle>
+                        <CardDescription>Jot down notes during the consultation.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <Textarea 
+                            placeholder="Type your notes here..." 
+                            className="min-h-[150px]"
+                            value={quickNote}
+                            onChange={(e) => setQuickNote(e.target.value)}
+                            disabled={!isConnected}
+                        />
+                        <Button 
+                            onClick={handleSaveNote} 
+                            disabled={!isConnected || !quickNote.trim()}
+                            className="w-full"
+                        >
+                            Save Note to Record
+                        </Button>
+                    </CardContent>
                 </Card>
               </div>
             </div>
