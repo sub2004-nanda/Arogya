@@ -6,11 +6,17 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Mic, PhoneOff, Send, Loader2, User, Stethoscope } from 'lucide-react';
+import { Video, Mic, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer } from 'lucide-react';
+
+interface Vitals {
+  heartRate: number;
+  bloodPressure: string;
+  oxygenSaturation: number;
+  temperature: number;
+}
 
 export default function VideoConsultationPage() {
   const { toast } = useToast();
@@ -19,6 +25,12 @@ export default function VideoConsultationPage() {
   const [isConnected, setIsConnected] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const [vitals, setVitals] = useState<Vitals>({
+    heartRate: 70,
+    bloodPressure: '120/80',
+    oxygenSaturation: 98,
+    temperature: 98.6,
+  });
 
   useEffect(() => {
     const getCameraPermission = async () => {
@@ -42,7 +54,6 @@ export default function VideoConsultationPage() {
 
     getCameraPermission();
 
-    // Simulate connecting to a doctor
     const connectionTimeout = setTimeout(() => {
         setIsConnecting(false);
         if (hasCameraPermission !== false) {
@@ -54,15 +65,28 @@ export default function VideoConsultationPage() {
         }
     }, 3000);
 
-
     return () => {
-      // Clean up camera stream
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       clearTimeout(connectionTimeout);
     };
   }, [hasCameraPermission, toast]);
+  
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const interval = setInterval(() => {
+      setVitals({
+        heartRate: Math.floor(Math.random() * (90 - 65 + 1) + 65), // Random HR between 65 and 90
+        bloodPressure: `${Math.floor(Math.random() * (125 - 115 + 1) + 115)}/${Math.floor(Math.random() * (85 - 75 + 1) + 75)}`,
+        oxygenSaturation: Math.floor(Math.random() * (100 - 95 + 1) + 95), // Random O2 between 95 and 100
+        temperature: parseFloat((Math.random() * (99.0 - 98.0) + 98.0).toFixed(1)),
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isConnected]);
 
   const handleEndCall = () => {
     setIsConnected(false);
@@ -71,7 +95,6 @@ export default function VideoConsultationPage() {
       title: "Call Ended",
       description: "Your consultation has ended.",
     });
-    // In a real app, you would also navigate the user away or to a summary page.
   };
 
   return (
@@ -103,7 +126,6 @@ export default function VideoConsultationPage() {
                         </div>
                     </CardHeader>
                   <CardContent className="p-0 relative aspect-video bg-muted flex items-center justify-center">
-                    {/* Doctor's Video Placeholder */}
                      {isConnecting && !isConnected && (
                         <div className="text-center">
                             <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
@@ -126,7 +148,6 @@ export default function VideoConsultationPage() {
                         </Alert>
                      )}
                     
-                    {/* Patient's Video */}
                     <div className="absolute bottom-4 right-4 h-1/4 w-1/4 min-w-[120px] rounded-md overflow-hidden border-2 border-background shadow-lg">
                       <video ref={videoRef} className="w-full h-full object-cover transform -scale-x-100" autoPlay muted playsInline />
                     </div>
@@ -146,37 +167,39 @@ export default function VideoConsultationPage() {
               <div className="md:col-span-1">
                 <Card className="flex h-full flex-col">
                   <CardHeader>
-                    <CardTitle>Live Chat</CardTitle>
+                    <CardTitle>Live Vitals</CardTitle>
+                    <CardDescription>Real-time data from ASHA worker.</CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-1 space-y-4 overflow-y-auto p-4">
-                    {/* Mock Chat Messages */}
-                    <div className="flex items-end gap-2">
-                        <Avatar className="h-8 w-8">
-                            <AvatarImage src="https://picsum.photos/seed/doc1/100/100" />
-                            <AvatarFallback>DA</AvatarFallback>
-                        </Avatar>
-                        <div className="max-w-[75%] rounded-lg bg-muted p-3 text-sm">
-                            <p>Hello! I'm Dr. Anand. How can I help you today?</p>
+                  <CardContent className="flex-1 space-y-6 overflow-y-auto p-4">
+                     <div className="flex items-center gap-4">
+                        <HeartPulse className="h-8 w-8 text-primary" />
+                        <div>
+                            <div className="text-sm text-muted-foreground">Heart Rate</div>
+                            <div className="font-bold text-2xl">{vitals.heartRate} <span className="text-base font-normal">BPM</span></div>
                         </div>
                     </div>
-                     <div className="flex items-end gap-2 justify-end">
-                        <div className="max-w-[75%] rounded-lg bg-primary p-3 text-sm text-primary-foreground">
-                            <p>Hi Doctor, I have a persistent headache.</p>
+                     <div className="flex items-center gap-4">
+                        <Activity className="h-8 w-8 text-primary" />
+                        <div>
+                            <div className="text-sm text-muted-foreground">Blood Pressure</div>
+                            <div className="font-bold text-2xl">{vitals.bloodPressure} <span className="text-base font-normal">mmHg</span></div>
                         </div>
-                         <Avatar className="h-8 w-8">
-                            <AvatarFallback><User/></AvatarFallback>
-                        </Avatar>
                     </div>
-
+                    <div className="flex items-center gap-4">
+                        <Wind className="h-8 w-8 text-primary" />
+                        <div>
+                            <div className="text-sm text-muted-foreground">Oxygen Saturation</div>
+                            <div className="font-bold text-2xl">{vitals.oxygenSaturation}<span className="text-base font-normal">%</span></div>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Thermometer className="h-8 w-8 text-primary" />
+                        <div>
+                            <div className="text-sm text-muted-foreground">Temperature</div>
+                            <div className="font-bold text-2xl">{vitals.temperature.toFixed(1)} <span className="text-base font-normal">°F</span></div>
+                        </div>
+                    </div>
                   </CardContent>
-                  <div className="border-t p-4">
-                    <div className="flex items-center gap-2">
-                      <Input placeholder="Type your message..." disabled={!isConnected} />
-                      <Button size="icon" disabled={!isConnected}>
-                        <Send />
-                      </Button>
-                    </div>
-                  </div>
                 </Card>
               </div>
             </div>
@@ -188,5 +211,3 @@ export default function VideoConsultationPage() {
     </div>
   );
 }
-
-    
