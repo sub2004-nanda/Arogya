@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -39,6 +38,8 @@ import { useAuth } from "@/hooks/use-auth";
 const signupSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   email: z.string().email({ message: "Invalid email address." }),
+  age: z.coerce.number().positive({ message: "Please enter a valid age."}).optional(),
+  gender: z.string().optional(),
   role: z.enum(["patient", "doctor", "pharmacy", "asha"], {
     required_error: "You must select a role.",
   }),
@@ -64,7 +65,7 @@ export default function SignupPage() {
     console.log("Signup data:", data);
 
     // For now, we'll just log them in directly
-    login(data.name, data.email, data.role);
+    login(data.name, data.email, data.role, data.age, data.gender);
 
     toast({
       title: "Account Created!",
@@ -120,6 +121,44 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="age"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Age</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 25" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="role"
@@ -130,7 +169,7 @@ export default function SignupPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select your role" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="patient">Patient</SelectItem>
