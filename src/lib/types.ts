@@ -1,13 +1,15 @@
 
+
 export interface Appointment {
   id: string;
-  patientType: 'user' | 'family';
   patientName: string;
-  familyMemberId?: string;
-  age: number;
-  gender: 'male' | 'female' | 'other';
+  doctorId: string;
+  doctorName: string;
+  doctorSpecialty: string;
   appointmentDate: Date;
-  department: string;
+  type: 'in-person' | 'teleconsult';
+  status: 'Scheduled' | 'Completed' | 'Cancelled';
+  reason: string;
 }
 
 export interface FamilyMember {
