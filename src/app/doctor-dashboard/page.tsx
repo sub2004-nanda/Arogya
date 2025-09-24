@@ -14,7 +14,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { Calendar, Users, Video, ArrowRight, NotebookPen, Bot } from "lucide-react";
+import { Calendar, Users, Video, ArrowRight, NotebookPen, Bot, BarChart4 } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const features = [
@@ -41,6 +41,14 @@ const features = [
     link: "/doctor-dashboard/ai-insights",
     stat: "Review",
     cta: "Analyze",
+  },
+  {
+    icon: BarChart4,
+    title: "Population Health",
+    description: "View village-level health patterns.",
+    link: "/doctor-dashboard/population-health",
+    stat: "Trends",
+    cta: "View Insights",
   },
   {
     icon: Video,

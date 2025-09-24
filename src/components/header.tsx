@@ -18,8 +18,8 @@ const patientNavLinks = [
 
 const doctorNavLinks = [
   { href: "/doctor-dashboard", label: "Home" },
-  { href: "/appointments", label: "Appointments" },
-  { href: "/doctor-dashboard/patient-queue", label: "My Patients" },
+  { href: "/doctor-dashboard/patient-queue", label: "Patient Queue" },
+  { href: "/doctor-dashboard/population-health", label: "Population Health" },
   { href: "/video-consultation", label: "Video Consultation" },
 ];
 
