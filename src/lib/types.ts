@@ -18,6 +18,7 @@ export interface Appointment {
   diagnosis?: string;
   doctorsNotes?: string;
   prescription?: string;
+  testReports?: string;
 }
 
 export interface FamilyMember {

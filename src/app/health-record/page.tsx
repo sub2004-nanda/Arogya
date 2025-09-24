@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, Calendar, Clock, Pill, Clipboard, Stethoscope } from "lucide-react";
+import { FileText, Calendar, Clock, Pill, Clipboard, Stethoscope, Beaker } from "lucide-react";
 import { format } from "date-fns";
 
 export default function HealthRecordPage() {
@@ -90,9 +90,10 @@ export default function HealthRecordPage() {
                  <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <Clock className="h-5 w-5" />
-                        Past Appointments & Records
+                        <FileText className="h-5 w-5" />
+                        Medical Records
                     </CardTitle>
+                    <CardDescription>Details from your past consultations.</CardDescription>
                   </CardHeader>
                   <CardContent>
                     {pastAppointments.length > 0 ? (
@@ -109,7 +110,7 @@ export default function HealthRecordPage() {
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent className="p-4 bg-primary/5 rounded-md mt-2">
-                                        {appt.status === "Completed" && (appt.diagnosis || appt.doctorsNotes || appt.prescription) ? (
+                                        {appt.status === "Completed" && (appt.diagnosis || appt.doctorsNotes || appt.prescription || appt.testReports) ? (
                                             <div className="space-y-4">
                                                 {appt.diagnosis && (
                                                 <div>
@@ -127,6 +128,12 @@ export default function HealthRecordPage() {
                                                 <div>
                                                     <h4 className="font-semibold flex items-center gap-2 mb-1"><Pill className="h-4 w-4"/> Prescription</h4>
                                                     <p className="text-sm pl-6">{appt.prescription}</p>
+                                                </div>
+                                                )}
+                                                {appt.testReports && (
+                                                <div>
+                                                    <h4 className="font-semibold flex items-center gap-2 mb-1"><Beaker className="h-4 w-4"/> Test Reports</h4>
+                                                    <p className="text-sm pl-6">{appt.testReports}</p>
                                                 </div>
                                                 )}
                                             </div>

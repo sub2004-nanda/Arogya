@@ -137,6 +137,7 @@ export default function AppointmentsPage() {
       diagnosis: isPastAppointment ? "Common Cold" : undefined,
       doctorsNotes: isPastAppointment ? "Patient advised to rest, stay hydrated, and take over-the-counter medication as needed. Follow up if symptoms persist after 7 days." : undefined,
       prescription: isPastAppointment ? "Paracetamol 500mg (as needed for fever/pain)" : undefined,
+      testReports: isPastAppointment ? "Blood Test Results: Normal. X-Ray: No issues detected." : undefined,
     };
     setAppointments(prev => [...prev, newAppointment]);
     toast({
