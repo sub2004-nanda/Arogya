@@ -48,13 +48,46 @@ const mockPastAppointments: Appointment[] = [
     },
 ];
 
+const getFutureDate = (days: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+const mockUpcomingAppointments: Appointment[] = [
+    {
+        id: 'mock-upcoming-1',
+        patientName: 'Anita Sharma',
+        doctorId: 'dr-sharma-cardio',
+        doctorName: 'Dr. Sharma',
+        doctorSpecialty: 'Cardiology',
+        appointmentDate: getFutureDate(3),
+        type: 'in-person',
+        status: 'Scheduled',
+        reason: 'Routine Checkup',
+    },
+    {
+        id: 'mock-upcoming-2',
+        patientName: 'Myself',
+        doctorId: 'dr-singh-neuro',
+        doctorName: 'Dr. Singh',
+        doctorSpecialty: 'Neurology',
+        appointmentDate: getFutureDate(7),
+        type: 'in-person',
+        status: 'Scheduled',
+        reason: 'Follow-up consultation',
+    },
+];
+
 
 export default function HealthRecordPage() {
   const { user } = useAuth();
   const [appointments] = useLocalStorage<Appointment[]>("appointments", []);
 
-  const upcomingAppointments = appointments
-    .filter(a => new Date(a.appointmentDate) >= new Date())
+  const upcomingFromStorage = appointments
+    .filter(a => new Date(a.appointmentDate) >= new Date());
+    
+  const allUpcomingAppointments = [...mockUpcomingAppointments, ...upcomingFromStorage]
     .sort((a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime());
     
   const pastAppointmentsFromStorage = appointments
@@ -142,7 +175,7 @@ Disclaimer: This is not a substitute for professional medical advice. Always con
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {upcomingAppointments.length > 0 ? (
+                    {allUpcomingAppointments.length > 0 ? (
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -153,7 +186,7 @@ Disclaimer: This is not a substitute for professional medical advice. Always con
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {upcomingAppointments.map(appt => (
+                                {allUpcomingAppointments.map(appt => (
                                     <TableRow key={appt.id}>
                                         <TableCell>
                                             <div className="font-medium">{appt.doctorName}</div>
