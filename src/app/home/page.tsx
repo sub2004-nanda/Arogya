@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { HealthTips } from "@/components/health-tips";
-import { Stethoscope, Bot, Video, Pill, Users, HeartHandshake, ArrowRight } from "lucide-react";
+import { Stethoscope, Bot, Video, Pill, Users, HeartHandshake, ArrowRight, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,12 @@ const features = [
     link: "/symptom-checker",
   },
   {
+    icon: FileText,
+    title: "Health Records",
+    description: "View your medical history.",
+    link: "/health-record",
+  },
+  {
     icon: Video,
     title: "Video Consultation",
     description: "Connect with a doctor.",
@@ -42,12 +48,6 @@ const features = [
     title: "Family Health",
     description: "Manage family profiles.",
     link: "/family-health",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Community Hub",
-    description: "Health schemes & info.",
-    link: "/community",
   },
 ];
 
