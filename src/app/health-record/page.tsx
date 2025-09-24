@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@/hooks/use-auth";
@@ -11,9 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, Calendar, Clock, Pill, Clipboard, Stethoscope, Beaker, Download } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { FileText, Calendar, Pill, Clipboard, Stethoscope, Beaker, Download, Bot, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { getConsultationSummary } from "@/lib/actions";
+import { ConsultationSummaryOutput } from "@/ai/flows/consultation-summary";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const mockPastAppointments: Appointment[] = [
     {
@@ -48,12 +52,23 @@ const mockPastAppointments: Appointment[] = [
     },
 ];
 
+interface SummaryResult {
+    data?: ConsultationSummaryOutput;
+    error?: string;
+}
+
 export default function HealthRecordPage() {
   const { user } = useAuth();
   const [appointments] = useLocalStorage<Appointment[]>("appointments", []);
   const [mockUpcomingAppointments, setMockUpcomingAppointments] = useState<Appointment[]>([]);
 
+  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
+  const [summaryResult, setSummaryResult] = useState<SummaryResult | null>(null);
+  const [isPending, startTransition] = useTransition();
+
   useEffect(() => {
+    // This logic is moved inside useEffect to prevent hydration errors
+    // by ensuring dynamic dates are generated only on the client.
     const getFutureDate = (days: number) => {
         const date = new Date();
         date.setDate(date.getDate() + days);
@@ -153,6 +168,22 @@ Disclaimer: This is not a substitute for professional medical advice. Always con
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+  
+  const handleGenerateSummary = (appointment: Appointment) => {
+    if (!appointment.diagnosis || !appointment.doctorsNotes) return;
+    setSummaryResult(null);
+    setIsSummaryDialogOpen(true);
+
+    startTransition(async () => {
+        const response = await getConsultationSummary({
+            diagnosis: appointment.diagnosis!,
+            doctorsNotes: appointment.doctorsNotes!,
+            prescription: appointment.prescription,
+            language: "English", // This could be dynamic based on user preference
+        });
+        setSummaryResult({ data: response });
+    });
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -255,10 +286,14 @@ Disclaimer: This is not a substitute for professional medical advice. Always con
                                                     <p className="text-sm pl-6">{appt.testReports}</p>
                                                 </div>
                                                 )}
-                                                <div className="pt-4">
+                                                <div className="pt-4 flex gap-2">
                                                     <Button onClick={() => handleDownloadReport(appt)} variant="outline" size="sm">
                                                         <Download className="mr-2 h-4 w-4"/>
                                                         Download Report
+                                                    </Button>
+                                                    <Button onClick={() => handleGenerateSummary(appt)} variant="default" size="sm">
+                                                        <Bot className="mr-2 h-4 w-4"/>
+                                                        AI Summary for Patient
                                                     </Button>
                                                 </div>
                                             </div>
@@ -278,6 +313,47 @@ Disclaimer: This is not a substitute for professional medical advice. Always con
           </div>
         </div>
       </main>
+
+       <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Bot /> AI Generated Summary</DialogTitle>
+            <DialogDescription>
+              A simple summary of the consultation for the patient. This is not a substitute for the doctor's full notes.
+            </DialogDescription>
+          </DialogHeader>
+          {isPending ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : summaryResult?.data ? (
+            <div className="space-y-4 py-4">
+              <div>
+                <h3 className="font-semibold text-lg">Main Problem:</h3>
+                <p>{summaryResult.data.summary.mainProblem}</p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">What to Do:</h3>
+                <p>{summaryResult.data.summary.whatToDo}</p>
+              </div>
+              {summaryResult.data.summary.medicine && (
+                <div>
+                  <h3 className="font-semibold text-lg">Medicine:</h3>
+                  <p>{summaryResult.data.summary.medicine}</p>
+                </div>
+              )}
+            </div>
+          ) : (
+             <Alert variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                    {summaryResult?.error || "Could not generate summary. Please try again."}
+                </AlertDescription>
+            </Alert>
+          )}
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   );
