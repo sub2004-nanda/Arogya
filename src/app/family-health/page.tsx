@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,21 +30,6 @@ const initialFamilyMembers: FamilyMember[] = [
   { id: "fm-3", name: "Priya Sharma", age: 12, gender: "female", relationship: "Daughter" },
 ];
 
-const mockFamilyAppointments = [
-  { id: "apt-1", memberId: "fm-1", memberName: "Ramesh Sharma", doctor: "Dr. Sharma", specialty: "Cardiology", date: new Date(new Date().setDate(new Date().getDate() + 5)), status: "Scheduled" },
-  { id: "apt-2", memberId: "fm-3", memberName: "Priya Sharma", doctor: "Dr. Gupta", specialty: "Pediatrics", date: new Date(new Date().setDate(new Date().getDate() + 10)), status: "Scheduled" },
-];
-
-const mockFamilyPrescriptions = [
-  { id: "pre-1", memberName: "Ramesh Sharma", medicine: "Amlodipine 5mg", doctor: "Dr. Sharma", date: new Date(new Date().setDate(new Date().getDate() - 15)) },
-  { id: "pre-2", memberName: "Sita Sharma", medicine: "Calcium Tablets", doctor: "Dr. Joshi", date: new Date(new Date().setDate(new Date().getDate() - 30)) },
-];
-
-const mockVaccinations = [
-  { id: "vac-1", memberName: "Priya Sharma", vaccine: "HPV Vaccine (2nd Dose)", status: "Due", dueDate: new Date(new Date().setDate(new Date().getDate() + 20)) },
-  { id: "vac-2", memberName: "Priya Sharma", vaccine: "Tdap Booster", status: "Completed", dueDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)) },
-];
-
 const addMemberSchema = z.object({
   name: z.string().min(1, "Name is required."),
   relationship: z.string().min(1, "Relationship is required."),
@@ -59,6 +44,24 @@ export default function FamilyHealthPage() {
     const { toast } = useToast();
     const [familyMembers, setFamilyMembers] = useLocalStorage<FamilyMember[]>("familyMembers", initialFamilyMembers);
     const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+    const [mockFamilyAppointments, setMockFamilyAppointments] = useState<any[]>([]);
+    const [mockFamilyPrescriptions, setMockFamilyPrescriptions] = useState<any[]>([]);
+    const [mockVaccinations, setMockVaccinations] = useState<any[]>([]);
+
+    useEffect(() => {
+        setMockFamilyAppointments([
+            { id: "apt-1", memberId: "fm-1", memberName: "Ramesh Sharma", doctor: "Dr. Sharma", specialty: "Cardiology", date: new Date(new Date().setDate(new Date().getDate() + 5)), status: "Scheduled" },
+            { id: "apt-2", memberId: "fm-3", memberName: "Priya Sharma", doctor: "Dr. Gupta", specialty: "Pediatrics", date: new Date(new Date().setDate(new Date().getDate() + 10)), status: "Scheduled" },
+        ]);
+        setMockFamilyPrescriptions([
+            { id: "pre-1", memberName: "Ramesh Sharma", medicine: "Amlodipine 5mg", doctor: "Dr. Sharma", date: new Date(new Date().setDate(new Date().getDate() - 15)) },
+            { id: "pre-2", memberName: "Sita Sharma", medicine: "Calcium Tablets", doctor: "Dr. Joshi", date: new Date(new Date().setDate(new Date().getDate() - 30)) },
+        ]);
+        setMockVaccinations([
+            { id: "vac-1", memberName: "Priya Sharma", vaccine: "HPV Vaccine (2nd Dose)", status: "Due", dueDate: new Date(new Date().setDate(new Date().getDate() + 20)) },
+            { id: "vac-2", memberName: "Priya Sharma", vaccine: "Tdap Booster", status: "Completed", dueDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)) },
+        ]);
+    }, []);
 
     const form = useForm<AddMemberFormValues>({
         resolver: zodResolver(addMemberSchema),

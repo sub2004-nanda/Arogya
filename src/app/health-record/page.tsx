@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@/hooks/use-auth";
@@ -48,41 +48,42 @@ const mockPastAppointments: Appointment[] = [
     },
 ];
 
-const getFutureDate = (days: number) => {
-    const date = new Date();
-    date.setDate(date.getDate() + days);
-    return date;
-}
-
-const mockUpcomingAppointments: Appointment[] = [
-    {
-        id: 'mock-upcoming-1',
-        patientName: 'Anita Sharma',
-        doctorId: 'dr-sharma-cardio',
-        doctorName: 'Dr. Sharma',
-        doctorSpecialty: 'Cardiology',
-        appointmentDate: getFutureDate(3),
-        type: 'in-person',
-        status: 'Scheduled',
-        reason: 'Routine Checkup',
-    },
-    {
-        id: 'mock-upcoming-2',
-        patientName: 'Myself',
-        doctorId: 'dr-singh-neuro',
-        doctorName: 'Dr. Singh',
-        doctorSpecialty: 'Neurology',
-        appointmentDate: getFutureDate(7),
-        type: 'in-person',
-        status: 'Scheduled',
-        reason: 'Follow-up consultation',
-    },
-];
-
-
 export default function HealthRecordPage() {
   const { user } = useAuth();
   const [appointments] = useLocalStorage<Appointment[]>("appointments", []);
+  const [mockUpcomingAppointments, setMockUpcomingAppointments] = useState<Appointment[]>([]);
+
+  useEffect(() => {
+    const getFutureDate = (days: number) => {
+        const date = new Date();
+        date.setDate(date.getDate() + days);
+        return date;
+    }
+    setMockUpcomingAppointments([
+        {
+            id: 'mock-upcoming-1',
+            patientName: 'Anita Sharma',
+            doctorId: 'dr-sharma-cardio',
+            doctorName: 'Dr. Sharma',
+            doctorSpecialty: 'Cardiology',
+            appointmentDate: getFutureDate(3),
+            type: 'in-person',
+            status: 'Scheduled',
+            reason: 'Routine Checkup',
+        },
+        {
+            id: 'mock-upcoming-2',
+            patientName: 'Myself',
+            doctorId: 'dr-singh-neuro',
+            doctorName: 'Dr. Singh',
+            doctorSpecialty: 'Neurology',
+            appointmentDate: getFutureDate(7),
+            type: 'in-person',
+            status: 'Scheduled',
+            reason: 'Follow-up consultation',
+        },
+    ]);
+  }, []);
 
   const upcomingFromStorage = appointments
     .filter(a => new Date(a.appointmentDate) >= new Date());
