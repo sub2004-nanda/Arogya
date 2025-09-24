@@ -11,8 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, Calendar, Clock, Pill, Clipboard, Stethoscope, Beaker } from "lucide-react";
+import { FileText, Calendar, Clock, Pill, Clipboard, Stethoscope, Beaker, Download } from "lucide-react";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 const mockPastAppointments: Appointment[] = [
     {
@@ -71,6 +72,53 @@ export default function HealthRecordPage() {
         default: return "default";
     }
   }
+
+  const handleDownloadReport = (appointment: Appointment) => {
+    const reportContent = `
+Arogya - Medical Report
+=========================
+
+Date: ${format(new Date(), "PPP")}
+
+Patient Information
+-------------------
+Name: ${appointment.patientName}
+
+Appointment Details
+-------------------
+Date of Consultation: ${format(new Date(appointment.appointmentDate), "PPP 'at' h:mm a")}
+Doctor: ${appointment.doctorName}
+Specialty: ${appointment.doctorSpecialty}
+
+Consultation Summary
+----------------------
+Diagnosis:
+${appointment.diagnosis || 'N/A'}
+
+Doctor's Notes:
+${appointment.doctorsNotes || 'N/A'}
+
+Prescription:
+${appointment.prescription || 'N/A'}
+
+Test Reports:
+${appointment.testReports || 'N/A'}
+
+=========================
+This is a system-generated report.
+Disclaimer: This is not a substitute for professional medical advice. Always consult a qualified healthcare professional.
+`;
+
+    const blob = new Blob([reportContent.trim()], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Arogya-Report-${appointment.patientName.replace(/\s+/g, '-')}-${format(new Date(appointment.appointmentDate), "yyyy-MM-dd")}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -173,6 +221,12 @@ export default function HealthRecordPage() {
                                                     <p className="text-sm pl-6">{appt.testReports}</p>
                                                 </div>
                                                 )}
+                                                <div className="pt-4">
+                                                    <Button onClick={() => handleDownloadReport(appt)} variant="outline" size="sm">
+                                                        <Download className="mr-2 h-4 w-4"/>
+                                                        Download Report
+                                                    </Button>
+                                                </div>
                                             </div>
                                         ) : (
                                             <p className="text-muted-foreground text-sm">No detailed record available for this appointment.</p>
