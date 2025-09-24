@@ -5,11 +5,16 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { User, Stethoscope, HeartHandshake, ArrowRight } from "lucide-react";
+import { User, Stethoscope, HeartHandshake, ArrowRight, ArrowLeft } from "lucide-react";
 
 export default function SignupPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-primary/5 p-4">
+      <div className="absolute top-4 left-4">
+        <Button asChild variant="outline">
+          <Link href="/"><ArrowLeft className="mr-2" /> Back to Home</Link>
+        </Button>
+      </div>
       <div className="mb-8">
         <Link href="/"><Logo className="h-16 w-auto" /></Link>
       </div>
