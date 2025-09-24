@@ -29,6 +29,12 @@
       "description": "A professional and modern image of a doctor reviewing medical information on a tablet.",
       "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb2N0b3IlMjB0YWJsZXR8ZW58MHx8fHwxNzYwMTI1MzM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "doctor tablet"
+    },
+    {
+      "id": "pharmacy-dashboard-hero",
+      "description": "A clean and professional image of a pharmacy interior.",
+      "imageUrl": "https://images.unsplash.com/photo-1585435557343-3c6143a248f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwaGFybWFjeSUyMHN0b3JlfGVufDB8fHx8MTc2MDM0MjY5OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pharmacy store"
     }
   ]
 }

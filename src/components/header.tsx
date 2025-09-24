@@ -30,8 +30,8 @@ const ashaNavLinks = [
 
 const pharmacyNavLinks = [
     { href: "/pharmacy-dashboard", label: "Dashboard" },
-    { href: "/pharmacy-dashboard/inventory", label: "Inventory" },
-    { href: "/pharmacy-dashboard/orders", label: "Orders" },
+    { href: "#", label: "Inventory" },
+    { href: "#", label: "Orders" },
 ];
 
 
