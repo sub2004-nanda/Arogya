@@ -32,6 +32,12 @@ const features = [
     link: "/health-record",
   },
   {
+    icon: Users,
+    title: "Family Health",
+    description: "Manage family profiles.",
+    link: "/family-health",
+  },
+  {
     icon: Video,
     title: "Video Consultation",
     description: "Connect with a doctor.",
