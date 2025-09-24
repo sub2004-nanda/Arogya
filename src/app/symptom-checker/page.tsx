@@ -10,8 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { checkSymptoms } from "@/lib/actions";
-import { AlertCircle, Bot, Camera, Mic, MicOff, VideoOff } from "lucide-react";
+import { AlertCircle, Bot, Camera, Mic, MicOff, VideoOff, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface SymptomResult {
   potentialConditions?: string;
@@ -53,10 +54,13 @@ export default function SymptomCheckerPage() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     // Cleanup function to stop camera and microphone when the component unmounts
@@ -162,22 +166,15 @@ export default function SymptomCheckerPage() {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       
-      // Set canvas dimensions to match the video feed
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
       const context = canvas.getContext("2d");
       if (context) {
-        // Flip the context horizontally to create a mirror image
         context.translate(video.videoWidth, 0);
         context.scale(-1, 1);
-        
-        // Draw the video frame onto the canvas
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-        
-        // Reset the transformation
         context.setTransform(1, 0, 0, 1, 0, 0);
-
         const dataUrl = canvas.toDataURL("image/webp");
         setCapturedImage(dataUrl);
         disableCamera();
@@ -192,15 +189,66 @@ export default function SymptomCheckerPage() {
     disableCamera();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent, type: 'text' | 'visual') => {
     e.preventDefault();
-    if (!symptoms.trim() && !capturedImage) return;
+    const textInput = symptoms.trim();
+    const isTextSumbit = type === 'text' && textInput;
+    const isVisualSubmit = type === 'visual' && capturedImage;
+
+    if (!isTextSumbit && !isVisualSubmit) return;
 
     startTransition(async () => {
       setResult(null);
-      const response = await checkSymptoms({ symptoms, photoDataUri: capturedImage || undefined });
+      const input = {
+          symptoms: isTextSumbit ? textInput : "Analyzing image for symptoms.",
+          photoDataUri: isVisualSubmit ? capturedImage! : undefined
+      }
+      const response = await checkSymptoms(input);
       setResult(response);
     });
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target?.result as string;
+        setCapturedImage(dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setIsDragging(true);
+    } else if (e.type === "dragleave") {
+      setIsDragging(false);
+    }
+  };
+  
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (loadEvent) => {
+            const dataUrl = loadEvent.target?.result as string;
+            setCapturedImage(dataUrl);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Invalid File Type",
+            description: "Please drop an image file."
+        });
+    }
   };
 
   return (
@@ -225,7 +273,7 @@ export default function SymptomCheckerPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={(e) => handleSubmit(e, 'text')} className="space-y-4">
                 <div className="relative">
                   <Textarea
                     placeholder="e.g., fever, cough, headache..."
@@ -245,21 +293,23 @@ export default function SymptomCheckerPage() {
                     {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                   </Button>
                 </div>
-
-                 <Card>
-                  <CardHeader>
-                    <CardTitle>Visual Analysis (Optional)</CardTitle>
-                    <CardDescription>
-                      Use your camera to provide a photo of the symptom. The image will be converted to WebP format to save data.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {!isCameraEnabled && !capturedImage && (
-                      <Button onClick={enableCamera} type="button" variant="outline">
-                        <Camera className="mr-2" /> Start Camera
-                      </Button>
-                    )}
-                     {isCameraEnabled && (
+                <Button type="submit" disabled={isPending || !symptoms.trim()} className="w-full">
+                  {isPending ? "Analyzing..." : "Analyze Symptoms"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+          
+           <Card className="mx-auto mt-10 max-w-3xl">
+              <CardHeader>
+                <CardTitle>Visual Symptom Analyzer</CardTitle>
+                <CardDescription>
+                  Upload or take a photo of a visible symptom (e.g., a rash or swelling) for analysis.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={(e) => handleSubmit(e, 'visual')} className="space-y-4">
+                    {isCameraEnabled ? (
                         <div className="space-y-4">
                             <div className="relative w-full aspect-video rounded-md bg-muted overflow-hidden">
                                <video ref={videoRef} className="w-full h-full object-cover transform -scale-x-100" autoPlay muted playsInline />
@@ -269,12 +319,38 @@ export default function SymptomCheckerPage() {
                                     <Camera className="mr-2" /> Capture
                                 </Button>
                                 <Button onClick={disableCamera} type="button" variant="ghost">
-                                    <VideoOff className="mr-2" /> Stop Camera
+                                    <VideoOff className="mr-2" /> Cancel
                                 </Button>
                             </div>
                         </div>
+                    ) : capturedImage ? (
+                        <div className="relative w-full aspect-video rounded-md bg-muted overflow-hidden group">
+                           <img src={capturedImage} alt="Symptom" className="w-full h-full object-contain" />
+                           <Button onClick={resetCapture} type="button" variant="destructive" size="icon" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <X className="h-4 w-4" />
+                           </Button>
+                        </div>
+                    ) : (
+                        <div 
+                          className={cn("relative w-full aspect-video rounded-md border-2 border-dashed border-muted-foreground/50 flex flex-col items-center justify-center text-center p-4 transition-colors", { "bg-primary/10 border-primary": isDragging})}
+                          onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
+                        >
+                            <Upload className="h-10 w-10 text-muted-foreground mb-4"/>
+                            <p className="font-semibold text-muted-foreground">Drag & drop your photo here</p>
+                            <p className="text-sm text-muted-foreground">or</p>
+                            <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                                <Button type="button" onClick={() => fileInputRef.current?.click()}>
+                                    Upload a file
+                                </Button>
+                                 <Button type="button" onClick={enableCamera} variant="outline">
+                                    <Camera className="mr-2" /> Use Camera
+                                </Button>
+                            </div>
+                            <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
+                        </div>
                     )}
-                    {hasCameraPermission === false && !isCameraEnabled && (
+                    
+                    {hasCameraPermission === false && !isCameraEnabled && !capturedImage && (
                        <Alert variant="destructive">
                         <AlertCircle className="h-4 w-4" />
                         <AlertTitle>Camera Access Denied</AlertTitle>
@@ -283,29 +359,16 @@ export default function SymptomCheckerPage() {
                         </AlertDescription>
                       </Alert>
                     )}
-                    {capturedImage && (
-                      <div className="space-y-4">
-                        <p>Photo captured (as WebP):</p>
-                        <div className="relative">
-                            <img src={capturedImage} alt="Symptom" className="rounded-md max-h-60" />
-                        </div>
-                        <Button onClick={resetCapture} type="button" variant="outline">
-                          Remove Photo
-                        </Button>
-                      </div>
-                    )}
                     <canvas ref={canvasRef} className="hidden" />
-                  </CardContent>
-                </Card>
 
-                <Button type="submit" disabled={isPending || (!symptoms.trim() && !capturedImage) } className="w-full">
-                  {isPending ? "Analyzing..." : "Check Symptoms"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                    <Button type="submit" disabled={isPending || !capturedImage} className="w-full">
+                      {isPending ? "Analyzing..." : "Analyze Photo"}
+                    </Button>
+                </form>
+              </CardContent>
+           </Card>
 
-          {isPending && (
+          {(isPending) && (
             <Card className="mx-auto mt-6 max-w-3xl">
               <CardHeader>
                 <Skeleton className="h-6 w-1/2" />
