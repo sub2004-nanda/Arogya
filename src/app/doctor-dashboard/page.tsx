@@ -55,7 +55,7 @@ const features = [
     title: "Quick Notes",
     description: "Jot down notes for patient records.",
     link: "/doctor-dashboard/quick-notes",
-    stat: "3 drafts",
+    stat: "Add Notes",
     cta: "Add Note",
   },
 ];

@@ -6,3 +6,4 @@ import '@/ai/flows/localized-health-tips.ts';
 import '@/ai/flows/treatment-guide.ts';
 import '@/ai/flows/patient-risk-summary.ts';
 import '@/ai/flows/consultation-summary.ts';
+import '@/ai/flows/generate-summary.ts';

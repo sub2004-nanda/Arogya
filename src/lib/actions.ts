@@ -5,6 +5,7 @@ import { getLocalizedHealthTips as getLocalizedHealthTipsFlow, LocalizedHealthTi
 import { getTreatmentGuide as getTreatmentGuideFlow, TreatmentGuideInput } from "@/ai/flows/treatment-guide";
 import { getPatientRiskSummary as getPatientRiskSummaryFlow, PatientRiskSummaryInput } from "@/ai/flows/patient-risk-summary";
 import { getConsultationSummary as getConsultationSummaryFlow, ConsultationSummaryInput } from "@/ai/flows/consultation-summary";
+import { generateSummary as generateSummaryFlow, GenerateSummaryInput } from "@/ai/flows/generate-summary";
 
 
 export async function checkSymptoms(input: AISymptomCheckInput) {
@@ -54,6 +55,16 @@ export async function getConsultationSummary(input: ConsultationSummaryInput) {
         return result;
     } catch (error) {
         console.error("Failed to get consultation summary:", error);
+        return { error: "Failed to generate summary. Please try again." };
+    }
+}
+
+export async function generateSummary(input: GenerateSummaryInput) {
+    try {
+        const result = await generateSummaryFlow(input);
+        return result;
+    } catch (error) {
+        console.error("Failed to generate summary:", error);
         return { error: "Failed to generate summary. Please try again." };
     }
 }
