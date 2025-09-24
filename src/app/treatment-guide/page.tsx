@@ -6,29 +6,29 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { checkSymptoms } from "@/lib/actions";
-import { AlertCircle, Bot } from "lucide-react";
+import { getTreatmentGuide } from "@/lib/actions";
+import { AlertCircle, Bot, BookHeart } from "lucide-react";
 
-interface SymptomResult {
-  potentialConditions?: string;
+interface GuideResult {
+  guide?: string;
   error?: string;
 }
 
 export default function TreatmentGuidePage() {
-  const [symptoms, setSymptoms] = useState("");
-  const [result, setResult] = useState<SymptomResult | null>(null);
+  const [condition, setCondition] = useState("");
+  const [result, setResult] = useState<GuideResult | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!symptoms.trim()) return;
+    if (!condition.trim()) return;
 
     startTransition(async () => {
       setResult(null);
-      const response = await checkSymptoms({ symptoms });
+      const response = await getTreatmentGuide({ condition });
       setResult(response);
     });
   };
@@ -39,32 +39,32 @@ export default function TreatmentGuidePage() {
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
-              AI Symptom Checker &amp; Guide
+            <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl flex items-center justify-center gap-3">
+              <BookHeart />
+              AI Treatment Guide
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              Describe your symptoms, and our AI will provide you with potential insights and guidance.
+              Enter a medical condition to get a general treatment guide, including details, patient advice, and recovery tips.
             </p>
           </div>
 
           <Card className="mx-auto mt-10 max-w-3xl">
             <CardHeader>
-              <CardTitle>Enter Your Symptoms</CardTitle>
+              <CardTitle>Enter a Medical Condition</CardTitle>
               <CardDescription>
-                Be as detailed as possible for a more accurate analysis. For example, "I have a sharp headache on my left side, and a fever of 101°F."
+                For example, "Type 2 Diabetes", "Common Cold", or "Migraine".
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Textarea
-                  placeholder="e.g., fever, cough, headache..."
-                  className="min-h-[120px] resize-none"
-                  value={symptoms}
-                  onChange={(e) => setSymptoms(e.target.value)}
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
+                <Input
+                  placeholder="e.g., Hypertension"
+                  value={condition}
+                  onChange={(e) => setCondition(e.target.value)}
                   disabled={isPending}
                 />
-                <Button type="submit" disabled={isPending || !symptoms.trim()} className="w-full">
-                  {isPending ? "Analyzing..." : "Check Symptoms"}
+                <Button type="submit" disabled={isPending || !condition.trim()} className="w-full sm:w-auto">
+                  {isPending ? "Generating..." : "Get Guide"}
                 </Button>
               </form>
             </CardContent>
@@ -74,11 +74,11 @@ export default function TreatmentGuidePage() {
             <Card className="mx-auto mt-6 max-w-3xl">
               <CardHeader>
                 <Skeleton className="h-6 w-1/2" />
-                <Skeleton className="h-4 w-full mt-2" />
               </CardHeader>
               <CardContent className="space-y-4">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-3/4" />
               </CardContent>
             </Card>
@@ -97,18 +97,14 @@ export default function TreatmentGuidePage() {
                   <CardHeader>
                     <div className="flex items-center gap-2">
                       <Bot className="h-6 w-6 text-primary" />
-                      <CardTitle>AI Analysis Results</CardTitle>
+                      <CardTitle>AI-Generated Guide for: {condition}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent className="prose prose-sm max-w-none text-foreground">
-                    <p>{result.potentialConditions}</p>
-                    <Alert className="mt-6">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Important Disclaimer</AlertTitle>
-                      <AlertDescription>
-                        This is an AI-generated analysis and not a medical diagnosis. Please consult a qualified healthcare professional for any health concerns.
-                      </AlertDescription>
-                    </Alert>
+                  <CardContent>
+                     <div 
+                        className="prose prose-sm max-w-none text-foreground prose-headings:text-foreground prose-strong:text-foreground"
+                        dangerouslySetInnerHTML={{ __html: result.guide || "" }} 
+                     />
                   </CardContent>
                 </Card>
               )}
