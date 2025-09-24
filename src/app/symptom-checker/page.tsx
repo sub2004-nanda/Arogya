@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { checkSymptoms } from "@/lib/actions";
-import { AlertCircle, Bot, Camera, Video, VideoOff } from "lucide-react";
+import { AlertCircle, Bot, Camera, VideoOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface SymptomResult {
@@ -28,13 +28,13 @@ export default function SymptomCheckerPage() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     return () => {
       // Stop camera stream when component unmounts
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
   }, []);
@@ -43,11 +43,13 @@ export default function SymptomCheckerPage() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        streamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
         setHasCameraPermission(true);
         setIsCameraEnabled(true);
+        setCapturedImage(null);
       } catch (error) {
         console.error("Error accessing camera:", error);
         setHasCameraPermission(false);
@@ -68,11 +70,13 @@ export default function SymptomCheckerPage() {
   };
 
   const disableCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
-      videoRef.current.srcObject = null;
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
     }
+    if (videoRef.current) {
+        videoRef.current.srcObject = null;
+    }
+    streamRef.current = null;
     setIsCameraEnabled(false);
   };
 
@@ -80,11 +84,21 @@ export default function SymptomCheckerPage() {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      
+      // Set canvas dimensions to match video stream
+      const stream = video.srcObject as MediaStream;
+      const track = stream.getVideoTracks()[0];
+      const settings = track.getSettings();
+      canvas.width = settings.width || video.videoWidth;
+      canvas.height = settings.height || video.videoHeight;
+      
       const context = canvas.getContext("2d");
       if (context) {
-        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        // Flip the image horizontally for a mirror effect
+        context.translate(canvas.width, 0);
+        context.scale(-1, 1);
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
         const dataUrl = canvas.toDataURL("image/jpeg");
         setCapturedImage(dataUrl);
         disableCamera();
@@ -147,7 +161,9 @@ export default function SymptomCheckerPage() {
                     )}
                      {isCameraEnabled && (
                         <div className="space-y-4">
-                            <video ref={videoRef} className="w-full aspect-video rounded-md bg-muted" autoPlay muted playsInline />
+                            <div className="relative w-full aspect-video rounded-md bg-muted overflow-hidden">
+                               <video ref={videoRef} className="w-full h-full object-cover transform -scale-x-100" autoPlay muted playsInline />
+                            </div>
                             <div className="flex gap-2">
                                 <Button onClick={takePicture} type="button">
                                     <Camera className="mr-2" /> Capture
@@ -158,7 +174,7 @@ export default function SymptomCheckerPage() {
                             </div>
                         </div>
                     )}
-                    {hasCameraPermission === false && (
+                    {hasCameraPermission === false && !isCameraEnabled && (
                        <Alert variant="destructive">
                         <AlertCircle className="h-4 w-4" />
                         <AlertTitle>Camera Access Denied</AlertTitle>
@@ -171,7 +187,7 @@ export default function SymptomCheckerPage() {
                       <div className="space-y-4">
                         <p>Photo captured:</p>
                         <img src={capturedImage} alt="Symptom" className="rounded-md max-h-60" />
-                        <Button onClick={() => setCapturedImage(null)} type="button" variant="outline">
+                        <Button onClick={() => { setCapturedImage(null); setHasCameraPermission(null); }} type="button" variant="outline">
                           Remove Photo
                         </Button>
                       </div>
