@@ -10,7 +10,7 @@ const features = [
     {
         icon: Package,
         title: "Inventory",
-        description: "Manage your medicine stock, add new items, and track expiry dates.",
+        description: "Manage medicine stock, add new items, and track expiry dates.",
         link: "#",
         cta: "Manage Inventory",
     },
