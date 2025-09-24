@@ -111,18 +111,24 @@ export default function HealthRecordPage() {
                                     <AccordionContent className="p-4 bg-primary/5 rounded-md mt-2">
                                         {appt.status === "Completed" && (appt.diagnosis || appt.doctorsNotes || appt.prescription) ? (
                                             <div className="space-y-4">
+                                                {appt.diagnosis && (
                                                 <div>
                                                     <h4 className="font-semibold flex items-center gap-2 mb-1"><Stethoscope className="h-4 w-4"/> Diagnosis</h4>
                                                     <p className="text-sm pl-6">{appt.diagnosis}</p>
                                                 </div>
+                                                )}
+                                                {appt.doctorsNotes && (
                                                 <div>
                                                     <h4 className="font-semibold flex items-center gap-2 mb-1"><Clipboard className="h-4 w-4"/> Doctor's Notes</h4>
                                                     <p className="text-sm pl-6">{appt.doctorsNotes}</p>
                                                 </div>
+                                                )}
+                                                {appt.prescription && (
                                                 <div>
                                                     <h4 className="font-semibold flex items-center gap-2 mb-1"><Pill className="h-4 w-4"/> Prescription</h4>
                                                     <p className="text-sm pl-6">{appt.prescription}</p>
                                                 </div>
+                                                )}
                                             </div>
                                         ) : (
                                             <p className="text-muted-foreground text-sm">No detailed record available for this appointment.</p>

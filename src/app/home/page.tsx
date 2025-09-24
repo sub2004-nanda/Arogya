@@ -25,6 +25,12 @@ const features = [
     description: "Get instant AI insights.",
     link: "/symptom-checker",
   },
+   {
+    icon: FileText,
+    title: "Health Records",
+    description: "View your medical history.",
+    link: "/health-record",
+  },
   {
     icon: Video,
     title: "Video Consultation",
@@ -98,7 +104,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                     <div className="lg:col-span-2">
                         <h2 className="font-headline text-3xl font-bold tracking-tight mb-8">What would you like to do?</h2>
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
                             {features.map((feature) => (
                                 <Link href={feature.link} key={feature.title} className="group">
                                     <Card className="flex flex-col h-full text-left hover:shadow-lg transition-shadow">
