@@ -95,7 +95,7 @@ export default function LandingPage() {
                 <div className="container relative mx-auto px-4 text-left">
                     <div className="max-w-2xl">
                         <h1 className="font-headline text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-                           Your Health, Connected.
+                           Your Health, Connected To Arogya.
                         </h1>
                         <p className="mt-6 text-lg leading-8 text-foreground/80">
                            Arogya provides a seamless healthcare experience, from booking appointments to instant AI-powered symptom checks, all in your language.
