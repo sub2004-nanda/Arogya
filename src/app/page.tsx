@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Stethoscope, Pill, CalendarPlus, MapPin, HeartPulse } from 'lucide-react';
+import { Stethoscope, Pill, CalendarPlus, Users, Megaphone } from 'lucide-react';
 
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -26,6 +26,18 @@ const features = [
     description: 'Locate nearby pharmacies and check stock.',
     href: '/pharmacies',
     icon: Pill,
+  },
+  {
+    title: 'Community Forum',
+    description: 'Connect with others and share experiences.',
+    href: '/community',
+    icon: Users,
+  },
+  {
+    title: 'Health Awareness',
+    description: 'Stay informed about health campaigns.',
+    href: '/health-awareness',
+    icon: Megaphone,
   },
 ];
 
