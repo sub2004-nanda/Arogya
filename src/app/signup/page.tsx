@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { User, Stethoscope, HeartHandshake, ArrowRight, ArrowLeft } from "lucide-react";
+import { User, Stethoscope, HeartHandshake, ArrowRight, ArrowLeft, Store } from "lucide-react";
 
 export default function SignupPage() {
   return (
@@ -49,6 +49,15 @@ export default function SignupPage() {
               <div className="flex items-center gap-2">
                 <HeartHandshake />
                 <span>Register as an ASHA Worker</span>
+              </div>
+              <ArrowRight />
+            </Link>
+          </Button>
+           <Button asChild size="lg" className="w-full justify-between">
+            <Link href="/signup/pharmacy">
+              <div className="flex items-center gap-2">
+                <Store />
+                <span>Register as a Pharmacy</span>
               </div>
               <ArrowRight />
             </Link>

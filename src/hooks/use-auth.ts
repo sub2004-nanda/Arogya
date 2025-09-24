@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 interface User {
   name: string;
   email: string;
-  role?: 'patient' | 'doctor' | 'asha';
+  role?: 'patient' | 'doctor' | 'asha' | 'pharmacy';
   age?: number;
   gender?: string;
 }
@@ -16,7 +16,7 @@ export function useAuth() {
   const [user, setUser] = useLocalStorage<User | null>('user', null);
   const router = useRouter();
 
-  const login = (name: string, email: string, role?: 'patient' | 'doctor' | 'asha', age?: number, gender?: string) => {
+  const login = (name: string, email: string, role?: 'patient' | 'doctor' | 'asha' | 'pharmacy', age?: number, gender?: string) => {
     setUser({ name, email, role, age, gender });
   };
 
@@ -27,4 +27,3 @@ export function useAuth() {
 
   return { user, login, logout };
 }
-

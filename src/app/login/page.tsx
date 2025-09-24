@@ -28,12 +28,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Logo } from "@/components/logo";
 import { useAuth } from "@/hooks/use-auth";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Stethoscope, HeartHandshake } from "lucide-react";
+import { User, Stethoscope, HeartHandshake, Store } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(1, { message: "Password is required." }),
-  role: z.enum(["patient", "doctor", "asha"], {
+  role: z.enum(["patient", "doctor", "asha", "pharmacy"], {
     required_error: "Please select a role.",
   }),
 });
@@ -61,6 +61,8 @@ export default function LoginPage() {
     let name = data.email.split('@')[0];
     if (data.role === 'doctor') {
         name = "Dr. Ankit";
+    } else if (data.role === 'pharmacy') {
+        name = "Gupta Medicals";
     }
 
     login(name, data.email, data.role);
@@ -76,6 +78,9 @@ export default function LoginPage() {
         break;
       case "asha":
         router.push("/asha-dashboard");
+        break;
+      case "pharmacy":
+        router.push("/pharmacy-dashboard");
         break;
       case "patient":
       default:
@@ -115,6 +120,7 @@ export default function LoginPage() {
                         <SelectItem value="patient"><div className="flex items-center gap-2"><User />Patient</div></SelectItem>
                         <SelectItem value="doctor"><div className="flex items-center gap-2"><Stethoscope />Doctor</div></SelectItem>
                         <SelectItem value="asha"><div className="flex items-center gap-2"><HeartHandshake />ASHA Worker</div></SelectItem>
+                        <SelectItem value="pharmacy"><div className="flex items-center gap-2"><Store />Pharmacy</div></SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
