@@ -419,12 +419,12 @@ export default function VideoConsultationPage() {
 
               </div>
               <div className="md:col-span-1 space-y-8">
-                <Card className="flex h-full flex-col">
+                <Card>
                   <CardHeader>
                     <CardTitle>Live Vitals</CardTitle>
                     <CardDescription>Real-time data from ASHA worker.</CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-1 space-y-6 overflow-y-auto p-4">
+                  <CardContent className="space-y-6 overflow-y-auto p-4">
                     <div className="flex items-center gap-4">
                         <HeartPulse className="h-8 w-8 text-primary" />
                         <div>
