@@ -82,30 +82,32 @@ export default function VideoConsultationPage() {
 
     const getCameraPermission = async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        if (!isMounted) return;
-        setHasCameraPermission(false);
-        toast({
-            variant: 'destructive',
-            title: 'Unsupported Browser',
-            description: 'Your browser does not support video consultations.',
-        });
-        setIsConnecting(false);
+        if (isMounted) {
+            setHasCameraPermission(false);
+            toast({
+                variant: 'destructive',
+                title: 'Unsupported Browser',
+                description: 'Your browser does not support video consultations.',
+            });
+            setIsConnecting(false);
+        }
         return;
       }
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        if (!isMounted) {
+        if (isMounted) {
+            streamRef.current = stream;
+            setHasCameraPermission(true);
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+            }
+        } else {
             stream.getTracks().forEach(track => track.stop());
-            return;
-        }
-        streamRef.current = stream;
-        setHasCameraPermission(true);
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
         }
       } catch (error) {
         if (!isMounted) return;
+
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
         setIsConnecting(false);
@@ -114,10 +116,10 @@ export default function VideoConsultationPage() {
         let description = 'Please enable camera and microphone permissions in your browser settings to use video consultation.';
 
         if (error instanceof DOMException) {
-            if (error.name === 'NotFoundError') {
+            if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
                 title = 'No Device Found';
                 description = 'Could not find a camera or microphone. Please ensure they are connected and available.';
-            } else if (error.name === 'NotAllowedError') {
+            } else if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
                  title = 'Permission Denied';
                  description = 'Camera and microphone access was denied. Please grant permission to continue.';
             }
@@ -142,7 +144,8 @@ export default function VideoConsultationPage() {
         recognitionRef.current.stop();
       }
     };
-  }, [toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   useEffect(() => {
     let connectionTimeout: NodeJS.Timeout;
