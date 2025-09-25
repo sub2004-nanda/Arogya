@@ -12,54 +12,62 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ClipboardList, ArrowLeft } from "lucide-react";
 import { format, addDays } from "date-fns";
 
-const initialTasks = [
-  {
-    id: "task-1",
-    type: "Patient Visit",
-    subject: "Sunita Kaur - Post-natal checkup",
-    location: "House #12, Ramgarh Village",
-    status: "Pending",
-    dueDate: addDays(new Date(), 2),
-  },
-  {
-    id: "task-2",
-    type: "Health Survey",
-    subject: "Household Water Source Survey",
-    location: "Alipur Village, Sector 3",
-    status: "Pending",
-    dueDate: addDays(new Date(), 3),
-  },
-  {
-    id: "task-3",
-    type: "Patient Visit",
-    subject: "Ramesh Singh - Blood Pressure Monitoring",
-    location: "House #45, Ramgarh Village",
-    status: "Pending",
-    dueDate: addDays(new Date(), 1),
-  },
-  {
-    id: "task-4",
-    type: "Patient Visit",
-    subject: "Geeta Devi - Immunization Reminder",
-    location: "House #8, Alipur Village",
-    status: "Completed",
-    dueDate: addDays(new Date(), -1),
-  },
-  {
-    id: "task-5",
-    type: "Health Survey",
-    subject: "Nutrition Habits Survey",
-    location: "Community Center, Ramgarh",
-    status: "Pending",
-    dueDate: addDays(new Date(), 5),
-  },
-];
+type Task = {
+    id: string;
+    type: string;
+    subject: string;
+    location: string;
+    status: string;
+    dueDate: Date;
+};
 
 export default function FieldTasksPage() {
-    const [tasks, setTasks] = useState<typeof initialTasks>([]);
+    const [tasks, setTasks] = useState<Task[]>([]);
 
     useEffect(() => {
         // Set tasks on the client side to avoid hydration mismatch
+        const initialTasks: Task[] = [
+            {
+                id: "task-1",
+                type: "Patient Visit",
+                subject: "Sunita Kaur - Post-natal checkup",
+                location: "House #12, Ramgarh Village",
+                status: "Pending",
+                dueDate: addDays(new Date(), 2),
+            },
+            {
+                id: "task-2",
+                type: "Health Survey",
+                subject: "Household Water Source Survey",
+                location: "Alipur Village, Sector 3",
+                status: "Pending",
+                dueDate: addDays(new Date(), 3),
+            },
+            {
+                id: "task-3",
+                type: "Patient Visit",
+                subject: "Ramesh Singh - Blood Pressure Monitoring",
+                location: "House #45, Ramgarh Village",
+                status: "Pending",
+                dueDate: addDays(new Date(), 1),
+            },
+            {
+                id: "task-4",
+                type: "Patient Visit",
+                subject: "Geeta Devi - Immunization Reminder",
+                location: "House #8, Alipur Village",
+                status: "Completed",
+                dueDate: addDays(new Date(), -1),
+            },
+            {
+                id: "task-5",
+                type: "Health Survey",
+                subject: "Nutrition Habits Survey",
+                location: "Community Center, Ramgarh",
+                status: "Pending",
+                dueDate: addDays(new Date(), 5),
+            },
+        ];
         setTasks(initialTasks);
     }, []);
 
@@ -111,27 +119,33 @@ export default function FieldTasksPage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {tasks.sort((a,b) => a.dueDate.getTime() - b.dueDate.getTime()).map(task => (
-                                            <TableRow key={task.id} className={task.status === 'Pending' ? 'font-medium' : ''}>
-                                                <TableCell>
-                                                    <div className="flex flex-col">
-                                                        <span>{task.subject}</span>
-                                                        <span className="text-xs text-muted-foreground">{task.type}</span>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>{task.location}</TableCell>
-                                                <TableCell>{format(task.dueDate, "PPP")}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant={getStatusVariant(task.status)}>{task.status}</Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button size="sm" disabled={task.status === 'Completed'}>
-                                                        {task.type === 'Patient Visit' ? 'Start Visit' : 'Start Survey'} 
-                                                        <ArrowRight className="ml-2 h-4 w-4"/>
-                                                    </Button>
-                                                </TableCell>
+                                        {tasks.length > 0 ? (
+                                            tasks.sort((a,b) => a.dueDate.getTime() - b.dueDate.getTime()).map(task => (
+                                                <TableRow key={task.id} className={task.status === 'Pending' ? 'font-medium' : ''}>
+                                                    <TableCell>
+                                                        <div className="flex flex-col">
+                                                            <span>{task.subject}</span>
+                                                            <span className="text-xs text-muted-foreground">{task.type}</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>{task.location}</TableCell>
+                                                    <TableCell>{format(task.dueDate, "PPP")}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={getStatusVariant(task.status)}>{task.status}</Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Button size="sm" disabled={task.status === 'Completed'}>
+                                                            {task.type === 'Patient Visit' ? 'Start Visit' : 'Start Survey'} 
+                                                            <ArrowRight className="ml-2 h-4 w-4"/>
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={5} className="text-center">Loading tasks...</TableCell>
                                             </TableRow>
-                                        ))}
+                                        )}
                                     </TableBody>
                                 </Table>
                             </CardContent>
