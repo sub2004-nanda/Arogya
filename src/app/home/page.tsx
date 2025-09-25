@@ -100,11 +100,6 @@ const announcements = [
 export default function HomePage() {
   const { user } = useAuth();
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-home');
-  const announcementsWithImages = announcements.map(item => ({
-    ...item,
-    image: PlaceHolderImages.find(img => img.id === item.id)
-  }));
-
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -166,15 +161,10 @@ export default function HomePage() {
                     className="w-full"
                     >
                     <CarouselContent>
-                        {announcementsWithImages.map((item) => (
+                        {announcements.map((item) => (
                         <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
                            <Card className="overflow-hidden h-full flex flex-col">
                              <CardContent className="flex flex-col flex-grow p-6">
-                                {item.image && (
-                                    <div className="mb-4 -mx-6 -mt-6">
-                                        <Image src={item.image.imageUrl} alt={item.image.description} width={600} height={400} className="w-full h-auto object-cover"/>
-                                    </div>
-                                )}
                                 <CardTitle>{item.title}</CardTitle>
                                 <p className="text-muted-foreground mt-2 mb-4 flex-grow">{item.description}</p>
                                 <Button asChild>
