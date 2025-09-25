@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Faq } from "@/components/faq";
@@ -73,7 +73,6 @@ const announcements = [
         description: "Use our AI Symptom Checker for instant insights. Describe your symptoms and get guidance on potential next steps.",
         link: "/symptom-checker",
         linkText: "Try the Checker",
-        image: PlaceHolderImages.find(img => img.id === 'feat-symptom-checker')
     },
     {
         id: "feat-video-consult",
@@ -81,7 +80,12 @@ const announcements = [
         description: "Connect with a qualified doctor from the comfort of your home. No travel, no waiting rooms.",
         link: "/video-consultation",
         linkText: "Start a Call",
-        image: PlaceHolderImages.find(img => img.id === 'feat-video-consult')
+        image: {
+            src: "https://i.ibb.co/3WJ1g3L/feat-video-consult.png",
+            alt: "Illustration of a patient having a video call with a doctor.",
+            width: 500,
+            height: 388,
+        }
     },
     {
         id: "feat-health-records",
@@ -89,7 +93,6 @@ const announcements = [
         description: "Access your complete medical history, including past diagnoses, prescriptions, and test reports, anytime.",
         link: "/health-record",
         linkText: "View Records",
-        image: PlaceHolderImages.find(img => img.id === 'feat-health-records')
     },
 ]
 
@@ -160,11 +163,14 @@ export default function HomePage() {
                         {announcements.map((item) => (
                         <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
                            <Card className="overflow-hidden h-full flex flex-col">
-                             <CardHeader>
+                             <CardContent className="flex flex-col flex-grow p-6">
+                                {item.image && (
+                                    <div className="mb-4 -mx-6 -mt-6">
+                                        <Image src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} className="w-full h-auto object-cover"/>
+                                    </div>
+                                )}
                                 <CardTitle>{item.title}</CardTitle>
-                             </CardHeader>
-                             <CardContent className="flex flex-col flex-grow">
-                                <p className="text-muted-foreground mb-4 flex-grow">{item.description}</p>
+                                <p className="text-muted-foreground mt-2 mb-4 flex-grow">{item.description}</p>
                                 <Button asChild>
                                     <Link href={item.link}>{item.linkText} <ArrowRight className="ml-2"/></Link>
                                 </Button>
