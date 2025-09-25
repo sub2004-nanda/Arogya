@@ -80,12 +80,6 @@ const announcements = [
         description: "Connect with a qualified doctor from the comfort of your home. No travel, no waiting rooms.",
         link: "/video-consultation",
         linkText: "Start a Call",
-        image: {
-            src: "https://i.ibb.co/3WJ1g3L/feat-video-consult.png",
-            alt: "Illustration of a patient having a video call with a doctor.",
-            width: 500,
-            height: 388,
-        }
     },
     {
         id: "feat-health-records",
@@ -164,9 +158,9 @@ export default function HomePage() {
                         <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
                            <Card className="overflow-hidden h-full flex flex-col">
                              <CardContent className="flex flex-col flex-grow p-6">
-                                {item.image && (
+                                {(item as any).image && (
                                     <div className="mb-4 -mx-6 -mt-6">
-                                        <Image src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} className="w-full h-auto object-cover"/>
+                                        <Image src={(item as any).image.src} alt={(item as any).image.alt} width={(item as any).image.width} height={(item as any).image.height} className="w-full h-auto object-cover"/>
                                     </div>
                                 )}
                                 <CardTitle>{item.title}</CardTitle>
