@@ -68,18 +68,18 @@ const features = [
 
 const announcements = [
     {
-        id: "feat-symptom-checker",
-        title: "Feeling Unwell?",
-        description: "Use our AI Symptom Checker for instant insights. Describe your symptoms and get guidance on potential next steps.",
-        link: "/symptom-checker",
-        linkText: "Try the Checker",
-    },
-    {
         id: "feat-visual-analyzer",
         title: "Visual Symptom Analyzer",
         description: "Have a visible symptom like a rash or swelling? Upload a photo for our AI to analyze.",
         link: "/symptom-checker",
         linkText: "Analyze Photo"
+    },
+    {
+        id: "feat-symptom-checker",
+        title: "Feeling Unwell?",
+        description: "Use our AI Symptom Checker for instant insights. Describe your symptoms and get guidance on potential next steps.",
+        link: "/symptom-checker",
+        linkText: "Try the Checker",
     },
     {
         id: "feat-video-consult",
