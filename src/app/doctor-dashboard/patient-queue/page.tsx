@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
@@ -17,8 +17,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
-const smartQueuePatients = [
+type ReferredPatient = {
+  id: string;
+  name: string;
+  age: number;
+  reason: string;
+  priority: 'Emergency' | 'High Risk' | 'Routine';
+  referredBy: string;
+  waitTime: string;
+}
+
+const initialSmartQueue: ReferredPatient[] = [
   { id: 'PAT-EMG-001', name: 'Sunita Sharma', age: 65, reason: 'Chest Pain, Shortness of Breath', priority: 'Emergency', referredBy: 'ASHA Worker', waitTime: '5 mins' },
   { id: 'PAT-HR-002', name: 'Rajesh Kumar', age: 58, reason: 'High Blood Pressure Reading (180/120)', priority: 'High Risk', referredBy: 'Self', waitTime: '15 mins' },
 ];
@@ -39,6 +50,20 @@ const getPriorityBadge = (priority: string) => {
 }
 
 export default function PatientQueuePage() {
+  const [referredPatients] = useLocalStorage<ReferredPatient[]>('referredPatients', []);
+  const [smartQueue, setSmartQueue] = useState(initialSmartQueue);
+
+  useEffect(() => {
+    // Combine initial mock data with data from localStorage
+    const combinedQueue = [...initialSmartQueue];
+    referredPatients.forEach(p => {
+        if (!combinedQueue.some(sq => sq.id === p.id)) {
+            combinedQueue.push(p);
+        }
+    });
+    setSmartQueue(combinedQueue);
+  }, [referredPatients]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -70,7 +95,7 @@ export default function PatientQueuePage() {
                         <CardTitle className="flex items-center gap-2 text-destructive">
                             <AlertCircle /> Smart Queue (Priority Cases)
                         </CardTitle>
-                        <CardDescription>Emergency and high-risk patients are shown here first. These patients require immediate attention.</CardDescription>
+                        <CardDescription>Emergency and high-risk patients, including referrals from ASHA workers, are shown here first.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -84,7 +109,7 @@ export default function PatientQueuePage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {smartQueuePatients.map(patient => (
+                                {smartQueue.length > 0 ? smartQueue.map(patient => (
                                 <TableRow key={patient.id} className="bg-destructive/5 hover:bg-destructive/10">
                                     <TableCell>
                                         <div className="flex items-center gap-3">
@@ -105,7 +130,11 @@ export default function PatientQueuePage() {
                                          <Button size="sm">Start Consultation <ArrowRight className="ml-2"/></Button>
                                     </TableCell>
                                 </TableRow>
-                                ))}
+                                )) : (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center">No priority cases at the moment.</TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </CardContent>
@@ -164,4 +193,3 @@ export default function PatientQueuePage() {
     </div>
   );
 }
-

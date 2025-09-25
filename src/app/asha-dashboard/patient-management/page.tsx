@@ -16,14 +16,14 @@ import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { ArrowLeft, Users, UserPlus, Search, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, Search, ArrowRight, AlertTriangle } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
-
-const households = [
-  { id: 'HH-001', head: 'Rakesh Sharma', members: 4, village: 'Ramgarh', risk: 'Low' },
+const initialHouseholds = [
+  { id: 'HH-001', head: 'Rakesh Sharma', members: 4, village: 'Ramgarh', risk: 'Low', notes: '' },
   { id: 'HH-002', head: 'Sunita Devi', members: 3, village: 'Alipur', risk: 'High', notes: 'Pregnancy' },
-  { id: 'HH-003', head: 'Amit Kumar', members: 5, village: 'Ramgarh', risk: 'Low' },
+  { id: 'HH-003', head: 'Amit Kumar', members: 5, village: 'Ramgarh', risk: 'Low', notes: '' },
   { id: 'HH-004', head: 'Meena Kumari', members: 2, village: 'Ramgarh', risk: 'High', notes: 'Elderly care' },
   { id: 'HH-005', head: 'Rajinder Singh', members: 6, village: 'Alipur', risk: 'Medium', notes: 'Child immunization due' },
 ];
@@ -36,10 +36,23 @@ const addHouseholdSchema = z.object({
 
 type AddHouseholdFormValues = z.infer<typeof addHouseholdSchema>;
 
+type ReferredPatient = {
+  id: string;
+  name: string;
+  age: number;
+  reason: string;
+  priority: 'Emergency' | 'High Risk' | 'Routine';
+  referredBy: string;
+  waitTime: string;
+}
+
 export default function PatientManagementPage() {
     const { toast } = useToast();
+    const [households, setHouseholds] = useLocalStorage('households', initialHouseholds);
     const [searchTerm, setSearchTerm] = useState('');
     const [isAddHouseholdOpen, setIsAddHouseholdOpen] = useState(false);
+    const [referredPatients, setReferredPatients] = useLocalStorage<ReferredPatient[]>('referredPatients', []);
+
 
     const filteredHouseholds = households.filter(
         (h) =>
@@ -52,7 +65,15 @@ export default function PatientManagementPage() {
     });
 
     const onAddHousehold = (data: AddHouseholdFormValues) => {
-        console.log("New Household Data:", data);
+        const newHousehold = {
+            id: `HH-${Date.now()}`,
+            head: data.headName,
+            members: data.members,
+            village: data.village,
+            risk: 'Low', // Default risk
+            notes: ''
+        };
+        setHouseholds(prev => [...prev, newHousehold]);
         toast({
             title: "Household Added",
             description: `${data.headName}'s household has been registered.`,
@@ -69,6 +90,36 @@ export default function PatientManagementPage() {
 
     const getInitials = (name: string) => {
         return name.split(' ').map(n => n[0]).join('');
+    }
+
+    const handleReferPatient = (household: typeof initialHouseholds[0]) => {
+      // Create a mock referred patient object
+      const newReferredPatient: ReferredPatient = {
+        id: `PAT-REF-${household.id}`,
+        name: household.head,
+        age: 68, // Mock age
+        reason: household.notes || 'High-risk patient identified by ASHA worker',
+        priority: household.risk === 'High' ? 'Emergency' : 'High Risk',
+        referredBy: 'ASHA Worker',
+        waitTime: 'N/A', // Wait time will be calculated in the doctor's queue
+      };
+
+      // Check if patient is already referred
+      if (referredPatients.some(p => p.id === newReferredPatient.id)) {
+        toast({
+          variant: 'destructive',
+          title: "Already Referred",
+          description: `${household.head} is already in the doctor's smart queue.`
+        });
+        return;
+      }
+      
+      setReferredPatients(prev => [...prev, newReferredPatient]);
+
+      toast({
+        title: "Patient Referred!",
+        description: `${household.head} has been sent to the doctor's smart queue for immediate attention.`
+      });
     }
 
   return (
@@ -151,7 +202,7 @@ export default function PatientManagementPage() {
               <CardHeader>
                 <CardTitle>Household List</CardTitle>
                 <CardDescription>
-                  A list of all households in your area.
+                  A list of all households in your area. High-risk households should be referred to a doctor.
                 </CardDescription>
                 <div className="relative mt-4">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -198,9 +249,15 @@ export default function PatientManagementPage() {
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button variant="outline" size="sm">
-                              View Details <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
+                           {household.risk === 'Low' ? (
+                                <Button variant="outline" size="sm">
+                                  View Details <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                           ) : (
+                                <Button variant="destructive" size="sm" onClick={() => handleReferPatient(household)}>
+                                  <AlertTriangle className="mr-2 h-4 w-4" /> Refer to Doctor
+                                </Button>
+                           )}
                           </TableCell>
                         </TableRow>
                       ))
