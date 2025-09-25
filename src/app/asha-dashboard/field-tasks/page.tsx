@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ClipboardList, ArrowLeft } from "lucide-react";
 import { format, addDays } from "date-fns";
 
-const mockTasks = [
+const initialTasks = [
   {
     id: "task-1",
     type: "Patient Visit",
@@ -56,6 +56,12 @@ const mockTasks = [
 ];
 
 export default function FieldTasksPage() {
+    const [tasks, setTasks] = useState<typeof initialTasks>([]);
+
+    useEffect(() => {
+        // Set tasks on the client side to avoid hydration mismatch
+        setTasks(initialTasks);
+    }, []);
 
     const getStatusVariant = (status: string) => {
         switch(status) {
@@ -105,7 +111,7 @@ export default function FieldTasksPage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {mockTasks.sort((a,b) => a.dueDate.getTime() - b.dueDate.getTime()).map(task => (
+                                        {tasks.sort((a,b) => a.dueDate.getTime() - b.dueDate.getTime()).map(task => (
                                             <TableRow key={task.id} className={task.status === 'Pending' ? 'font-medium' : ''}>
                                                 <TableCell>
                                                     <div className="flex flex-col">
