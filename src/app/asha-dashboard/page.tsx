@@ -13,7 +13,7 @@ const ashaFeatures = [
         icon: ClipboardList,
         title: "Field Tasks",
         description: "View your list of assigned patient visits and health surveys.",
-        link: "#",
+        link: "/asha-dashboard/field-tasks",
         stat: "5 pending",
         cta: "View Tasks"
     },
