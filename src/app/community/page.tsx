@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const allSchemes = [
   {
@@ -63,25 +63,31 @@ const SchemeCard = ({ scheme }: { scheme: (typeof allSchemes)[0] }) => (
         </div>
         </CardHeader>
         <CardContent>
-        <Accordion type="single" collapsible>
-            <AccordionItem value="item-1">
-            <AccordionTrigger>View Details</AccordionTrigger>
-            <AccordionContent className="space-y-3 text-sm">
-                <div>
-                <h4 className="font-semibold">Use Case</h4>
-                <p>{scheme.details.useCase}</p>
-                </div>
-                <div>
-                <h4 className="font-semibold">Eligibility</h4>
-                <p>{scheme.details.eligibility}</p>
-                </div>
-                <div>
-                <h4 className="font-semibold">Beneficiaries</h4>
-                <p>{scheme.details.beneficiaries}</p>
-                </div>
-            </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full">View Details</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-xl">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl">{scheme.title}</DialogTitle>
+                        <DialogDescription>{scheme.organization}</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4 text-sm">
+                        <div className="grid grid-cols-3 items-start gap-4">
+                            <strong className="col-span-1 text-right">Use Case</strong>
+                            <p className="col-span-2">{scheme.details.useCase}</p>
+                        </div>
+                         <div className="grid grid-cols-3 items-start gap-4">
+                            <strong className="col-span-1 text-right">Eligibility</strong>
+                            <p className="col-span-2">{scheme.details.eligibility}</p>
+                        </div>
+                         <div className="grid grid-cols-3 items-start gap-4">
+                            <strong className="col-span-1 text-right">Beneficiaries</strong>
+                            <p className="col-span-2">{scheme.details.beneficiaries}</p>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </CardContent>
     </Card>
 );
