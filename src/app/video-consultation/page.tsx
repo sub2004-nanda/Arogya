@@ -305,20 +305,21 @@ export default function VideoConsultationPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1 bg-primary/5">
-        <div className="container mx-auto px-4 py-12">
+    <>
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1 bg-primary/5">
+          <div className="container mx-auto px-4 py-12">
             <div className="mb-6">
-                <Button asChild variant="outline">
-                    <Link href="/doctor-dashboard">
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to Dashboard
-                    </Link>
-                </Button>
+              <Button asChild variant="outline">
+                  <Link href="/doctor-dashboard">
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Back to Dashboard
+                  </Link>
+              </Button>
             </div>
-             <h1 className="text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl">Video Consultation</h1>
-             
+            <h1 className="text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl">Video Consultation</h1>
+            
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
               <div className="md:col-span-2">
                 <Card className="overflow-hidden">
@@ -335,32 +336,32 @@ export default function VideoConsultationPage() {
                                 </div>
                             </div>
                             <div className="text-sm text-muted-foreground">
-                               {getStatusText()}
+                              {getStatusText()}
                             </div>
                         </div>
                     </CardHeader>
                   <CardContent className="p-0 relative aspect-video bg-muted flex items-center justify-center">
-                     {isConnecting && (
+                    {isConnecting && (
                         <div className="text-center">
                             <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
                             <p className="mt-4 text-muted-foreground">Finding an available doctor...</p>
                         </div>
-                     )}
-                     {isConnected && (
-                         <div className="h-full w-full bg-gray-900 flex items-center justify-center text-white">
+                    )}
+                    {isConnected && (
+                        <div className="h-full w-full bg-gray-900 flex items-center justify-center text-white">
                             <Stethoscope className="h-24 w-24 opacity-20"/>
                             <p className="absolute bottom-4">Doctor's video feed</p>
                         </div>
-                     )}
-                     {hasCameraPermission === false && !isConnecting && (
-                         <Alert variant="destructive" className="m-4">
+                    )}
+                    {hasCameraPermission === false && !isConnecting && (
+                        <Alert variant="destructive" className="m-4">
                             <Video className="h-4 w-4" />
                             <AlertTitle>Camera or Microphone Issue</AlertTitle>
                             <AlertDescription>
                             Could not access camera or microphone. Please ensure they are connected and that you've granted permission in your browser settings.
                             </AlertDescription>
                         </Alert>
-                     )}
+                    )}
                     
                     <div className="absolute bottom-4 right-4 h-1/4 w-1/4 min-w-[120px] rounded-md overflow-hidden border-2 border-background shadow-lg">
                       <video ref={videoRef} className="w-full h-full object-cover transform -scale-x-100" autoPlay muted playsInline />
@@ -368,7 +369,7 @@ export default function VideoConsultationPage() {
                   </CardContent>
                 </Card>
 
-                 <div className="mt-4 flex justify-center gap-4">
+                <div className="mt-4 flex justify-center gap-4">
                     <Button variant="outline" size="lg" disabled={!isConnected} onClick={handleToggleMute}>
                         {isMuted ? <MicOff className="mr-2" /> : <Mic className="mr-2" />}
                         {isMuted ? 'Unmute' : 'Mute'}
@@ -424,14 +425,14 @@ export default function VideoConsultationPage() {
                     <CardDescription>Real-time data from ASHA worker.</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 space-y-6 overflow-y-auto p-4">
-                     <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4">
                         <HeartPulse className="h-8 w-8 text-primary" />
                         <div>
                             <div className="text-sm text-muted-foreground">Heart Rate</div>
                             <div className="font-bold text-2xl">{vitals.heartRate} <span className="text-base font-normal">BPM</span></div>
                         </div>
                     </div>
-                     <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4">
                         <Activity className="h-8 w-8 text-primary" />
                         <div>
                             <div className="text-sm text-muted-foreground">Blood Pressure</div>
@@ -479,11 +480,10 @@ export default function VideoConsultationPage() {
                 </Card>
               </div>
             </div>
-
           </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }
