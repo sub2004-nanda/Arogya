@@ -27,11 +27,11 @@ const ashaFeatures = [
     },
     {
         icon: Activity,
-        title: "Vitals Collection",
+        title: "Vitals Panel",
         description: "Record patient vitals like BP and temperature during visits.",
         link: "#",
         stat: "Offline Ready",
-        cta: "Collect Vitals"
+        cta: "Open Panel"
     },
     {
         icon: CalendarPlus,
