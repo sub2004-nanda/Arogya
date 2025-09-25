@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { checkSymptoms } from "@/lib/actions";
-import { AlertCircle, Bot, Camera, Mic, MicOff, VideoOff, Upload, X } from "lucide-react";
+import { AlertCircle, Bot, Camera, Mic, MicOff, VideoOff, Upload, X, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -256,6 +257,14 @@ export default function SymptomCheckerPage() {
       <Header />
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
+          <div className="mb-6">
+            <Button asChild variant="outline">
+                <Link href="/home">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Dashboard
+                </Link>
+            </Button>
+          </div>
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
               AI Symptom Checker

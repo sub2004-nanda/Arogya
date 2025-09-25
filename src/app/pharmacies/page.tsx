@@ -7,8 +7,9 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MapPin, Clock, Phone } from "lucide-react";
+import { MapPin, Clock, Phone, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { mockPharmacies } from "@/lib/mock-data";
 
 export default function PharmaciesPage() {
@@ -26,6 +27,14 @@ export default function PharmaciesPage() {
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mx-auto max-w-4xl">
+            <div className="mb-6">
+                <Button asChild variant="outline">
+                    <Link href="/home">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Dashboard
+                    </Link>
+                </Button>
+            </div>
             <div className="text-center">
               <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">Find a Pharmacy</h1>
               <p className="mt-4 text-lg text-muted-foreground">Search for nearby pharmacies to get your prescriptions.</p>

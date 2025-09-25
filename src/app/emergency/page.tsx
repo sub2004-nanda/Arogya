@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone, Siren, MapPin, Loader2 } from "lucide-react";
+import { Phone, Siren, MapPin, Loader2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function EmergencyPage() {
@@ -65,6 +66,14 @@ export default function EmergencyPage() {
       <Header />
       <main className="flex-1 bg-destructive/10">
         <div className="container mx-auto px-4 py-12 sm:py-16">
+           <div className="mb-6">
+            <Button asChild variant="outline" className="bg-white/80 hover:bg-white">
+                <Link href="/home">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Dashboard
+                </Link>
+            </Button>
+          </div>
           <div className="mx-auto max-w-2xl text-center">
             <Siren className="mx-auto h-16 w-16 text-destructive" />
             <h1 className="mt-4 font-headline text-4xl font-bold tracking-tight text-destructive sm:text-5xl">

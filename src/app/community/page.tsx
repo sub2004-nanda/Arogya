@@ -1,11 +1,14 @@
 
 "use client";
 
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const centralSchemes = [
   {
@@ -93,6 +96,14 @@ export default function CommunityPage() {
       <Header />
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
+          <div className="mb-6">
+            <Button asChild variant="outline">
+                <Link href="/home">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Dashboard
+                </Link>
+            </Button>
+          </div>
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">Community & Health Hub</h1>
             <p className="mt-4 text-lg text-muted-foreground">

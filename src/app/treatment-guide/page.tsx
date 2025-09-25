@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTreatmentGuide } from "@/lib/actions";
-import { AlertCircle, Bot, BookHeart } from "lucide-react";
+import { AlertCircle, Bot, BookHeart, ArrowLeft } from "lucide-react";
 
 interface GuideResult {
   guide?: string;
@@ -38,6 +39,14 @@ export default function TreatmentGuidePage() {
       <Header />
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
+           <div className="mb-6">
+            <Button asChild variant="outline">
+                <Link href="/home">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Dashboard
+                </Link>
+            </Button>
+          </div>
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl flex items-center justify-center gap-3">
               <BookHeart />

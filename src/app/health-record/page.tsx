@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useTransition } from "react";
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FileText, Calendar, Pill, Clipboard, Stethoscope, Beaker, Download, Bot, Loader2 } from "lucide-react";
+import { FileText, Calendar, Pill, Clipboard, Stethoscope, Beaker, Download, Bot, Loader2, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { getConsultationSummary } from "@/lib/actions";
@@ -196,6 +197,14 @@ Disclaimer: This is not a substitute for professional medical advice. Always con
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mx-auto max-w-5xl">
+            <div className="mb-6">
+                <Button asChild variant="outline">
+                    <Link href="/home">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Dashboard
+                    </Link>
+                </Button>
+            </div>
             <div className="mb-8 text-center">
                 <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">Medical Records</h1>
                 <p className="mt-4 text-lg text-muted-foreground">
