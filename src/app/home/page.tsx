@@ -75,6 +75,13 @@ const announcements = [
         linkText: "Try the Checker",
     },
     {
+        id: "feat-visual-analyzer",
+        title: "Visual Symptom Analyzer",
+        description: "Have a visible symptom like a rash or swelling? Upload a photo for our AI to analyze.",
+        link: "/symptom-checker",
+        linkText: "Analyze Photo"
+    },
+    {
         id: "feat-video-consult",
         title: "Video Consultations",
         description: "Connect with a qualified doctor from the comfort of your home. No travel, no waiting rooms.",
