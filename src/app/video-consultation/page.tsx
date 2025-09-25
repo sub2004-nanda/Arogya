@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -10,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Mic, MicOff, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen, FilePlus } from 'lucide-react';
+import { Video, Mic, MicOff, PhoneOff, Loader2, Stethoscope, HeartPulse, Activity, Wind, Thermometer, NotebookPen, FilePlus, ArrowLeft } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { useLocalStorage } from '@/hooks/use-local-storage';
@@ -308,13 +309,20 @@ export default function VideoConsultationPage() {
       <Header />
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12">
-          <div className="mx-auto max-w-5xl">
+            <div className="mb-6">
+                <Button asChild variant="outline">
+                    <Link href="/doctor-dashboard">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Dashboard
+                    </Link>
+                </Button>
+            </div>
              <h1 className="text-center font-headline text-4xl font-bold tracking-tight sm:text-5xl">Video Consultation</h1>
              
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
               <div className="md:col-span-2">
                 <Card className="overflow-hidden">
-                    <CardHeader className="p-4">
+                    <CardHeader className="p-4 border-b">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <Avatar>
@@ -479,5 +487,3 @@ export default function VideoConsultationPage() {
     </div>
   );
 }
-
-    
