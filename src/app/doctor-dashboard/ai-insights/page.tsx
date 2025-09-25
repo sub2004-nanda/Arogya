@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import {
@@ -23,7 +24,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getPatientRiskSummary } from '@/lib/actions';
-import { AlertCircle, Bot, Activity, Loader2 } from 'lucide-react';
+import { AlertCircle, Bot, Activity, Loader2, ArrowLeft } from 'lucide-react';
 import type { Appointment } from '@/lib/types';
 import { format } from 'date-fns';
 
@@ -126,6 +127,14 @@ export default function AiInsightsPage() {
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mx-auto max-w-3xl">
+            <div className="mb-6">
+                <Button asChild variant="outline">
+                    <Link href="/doctor-dashboard">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Dashboard
+                    </Link>
+                </Button>
+            </div>
             <div className="text-center mb-10">
               <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
                 AI Patient Insights

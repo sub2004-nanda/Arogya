@@ -3,15 +3,17 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import type { Appointment } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Calendar, User } from "lucide-react";
+import { Calendar, User, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { Button } from "@/components/ui/button";
 
 const mockDoctorAppointments: Appointment[] = [
     {
@@ -132,6 +134,14 @@ export default function DoctorSchedulePage() {
         {/* Schedule Table Section */}
         <section className="bg-primary/5 py-20 sm:py-24">
             <div className="container mx-auto px-4">
+                 <div className="mb-6">
+                    <Button asChild variant="outline">
+                        <Link href="/doctor-dashboard">
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back to Dashboard
+                        </Link>
+                    </Button>
+                </div>
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">

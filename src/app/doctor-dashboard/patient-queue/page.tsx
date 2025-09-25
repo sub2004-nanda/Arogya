@@ -2,13 +2,14 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, UserPlus } from 'lucide-react';
+import { AlertCircle, ArrowRight, UserPlus, ArrowLeft } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Tooltip,
@@ -44,6 +45,14 @@ export default function PatientQueuePage() {
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mx-auto max-w-7xl">
+            <div className="mb-6">
+                <Button asChild variant="outline">
+                    <Link href="/doctor-dashboard">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Dashboard
+                    </Link>
+                </Button>
+            </div>
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">Patient Queue</h1>

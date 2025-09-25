@@ -2,6 +2,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart, Cell } from "recharts"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -26,7 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { BarChart4 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { BarChart4, ArrowLeft } from "lucide-react"
 
 const conditionsData = {
   Ramgarh: [
@@ -111,6 +113,14 @@ export default function PopulationHealthPage() {
       <main className="flex-1 bg-primary/5">
         <div className="container mx-auto px-4 py-12 sm:py-16">
           <div className="mx-auto max-w-6xl">
+            <div className="mb-6">
+                <Button asChild variant="outline">
+                    <Link href="/doctor-dashboard">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Dashboard
+                    </Link>
+                </Button>
+            </div>
             <div className="text-center mb-10">
               <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl flex items-center justify-center gap-3">
                 <BarChart4 /> Population Health Insights
