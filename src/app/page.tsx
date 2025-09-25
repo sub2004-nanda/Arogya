@@ -54,6 +54,9 @@ export default function LandingPage() {
                 <div className="flex items-center gap-2">
                   {user ? (
                     <>
+                       <Button asChild>
+                         <Link href="/home">Dashboard</Link>
+                       </Button>
                        <Button variant="ghost" size="icon" onClick={logout}>
                           <LogOut className="h-4 w-4" />
                           <span className="sr-only">Logout</span>
