@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,8 +41,13 @@ export default function ProfilePage() {
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: profile,
+    defaultValues: initialProfile, // Use initial values for server render
   });
+
+  // Populate form with local storage data on client side
+  useEffect(() => {
+    form.reset(profile);
+  }, [profile, form]);
 
   const onSubmit = (data: ProfileFormValues) => {
     setProfile(data);
