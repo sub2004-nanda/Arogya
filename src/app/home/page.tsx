@@ -159,23 +159,12 @@ export default function HomePage() {
                     <CarouselContent>
                         {announcements.map((item) => (
                         <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
-                           <Card className="overflow-hidden h-full">
-                             <div className="relative h-48 w-full">
-                                {item.image && (
-                                    <Image
-                                        src={item.image.imageUrl}
-                                        alt={item.image.description}
-                                        fill
-                                        className="object-cover"
-                                        data-ai-hint={item.image.imageHint}
-                                    />
-                                )}
-                             </div>
+                           <Card className="overflow-hidden h-full flex flex-col">
                              <CardHeader>
                                 <CardTitle>{item.title}</CardTitle>
                              </CardHeader>
-                             <CardContent>
-                                <p className="text-muted-foreground mb-4">{item.description}</p>
+                             <CardContent className="flex flex-col flex-grow">
+                                <p className="text-muted-foreground mb-4 flex-grow">{item.description}</p>
                                 <Button asChild>
                                     <Link href={item.link}>{item.linkText} <ArrowRight className="ml-2"/></Link>
                                 </Button>
