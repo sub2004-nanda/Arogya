@@ -45,7 +45,7 @@ const ashaFeatures = [
         icon: Megaphone,
         title: "Health Campaigns",
         description: "Get information on current and upcoming health campaigns.",
-        link: "#",
+        link: "/asha-dashboard/health-campaigns",
         stat: "2 Active",
         cta: "View Campaigns"
     },
