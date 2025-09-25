@@ -17,7 +17,7 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
       </linearGradient>
     </defs>
     <rect x="0" y="0" width="300" height="100" fill="transparent" />
-    <g transform="scale(1) translate(0,0)">
+    <g transform="scale(1.2) translate(0,0)">
       <circle cx="50" cy="50" r="45" fill="hsl(var(--primary-foreground))" stroke="hsl(var(--primary) / 0.2)" strokeWidth="2" opacity="0.1" />
       <rect x="42" y="30" width="16" height="40" rx="3" fill="url(#crossGradient)" />
       <rect x="30" y="42" width="40" height="16" rx="3" fill="url(#crossGradient)" />
