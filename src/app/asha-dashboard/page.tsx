@@ -21,7 +21,7 @@ const ashaFeatures = [
         icon: Users,
         title: "Patient Management",
         description: "Access and update health records for community members.",
-        link: "#",
+        link: "/asha-dashboard/patient-management",
         stat: "85 households",
         cta: "Manage Patients"
     },
