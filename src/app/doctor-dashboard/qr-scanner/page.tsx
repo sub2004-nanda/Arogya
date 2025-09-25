@@ -31,23 +31,39 @@ export default function QrScannerPage() {
         streamRef.current.getTracks().forEach(track => track.stop());
     }
 
+    const videoConstraints: MediaStreamConstraints = {
+      video: { facingMode: "environment" }
+    };
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      const stream = await navigator.mediaDevices.getUserMedia(videoConstraints);
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
       setHasCameraPermission(true);
       setIsCameraEnabled(true);
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-      setHasCameraPermission(false);
-      setIsCameraEnabled(false);
-      toast({
-        variant: "destructive",
-        title: "Camera Access Denied",
-        description: "Please enable camera permissions to scan a QR code.",
-      });
+    } catch (err) {
+      // If environment camera fails, try with any camera
+      console.warn("Environment camera failed, trying default camera:", err);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+        setHasCameraPermission(true);
+        setIsCameraEnabled(true);
+      } catch (error) {
+        console.error("Error accessing camera:", error);
+        setHasCameraPermission(false);
+        setIsCameraEnabled(false);
+        toast({
+          variant: "destructive",
+          title: "Camera Access Denied",
+          description: "Please enable camera permissions to scan a QR code.",
+        });
+      }
     }
   };
 
