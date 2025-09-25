@@ -130,8 +130,12 @@ export default function SymptomCheckerPage() {
         streamRef.current.getTracks().forEach(track => track.stop());
     }
 
+    const videoConstraints: MediaStreamConstraints = {
+      video: { facingMode: "environment" }
+    };
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia(videoConstraints);
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -139,15 +143,28 @@ export default function SymptomCheckerPage() {
       setHasCameraPermission(true);
       setIsCameraEnabled(true);
       setCapturedImage(null); // Clear previous image
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-      setHasCameraPermission(false);
-      setIsCameraEnabled(false);
-      toast({
-        variant: "destructive",
-        title: "Camera Access Denied",
-        description: "Please enable camera permissions in your browser settings to use this app.",
-      });
+    } catch (err) {
+      // If environment camera fails, try with any camera
+      console.warn("Environment camera failed, trying default camera:", err);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+        setHasCameraPermission(true);
+        setIsCameraEnabled(true);
+        setCapturedImage(null);
+      } catch (error) {
+        console.error("Error accessing camera:", error);
+        setHasCameraPermission(false);
+        setIsCameraEnabled(false);
+        toast({
+          variant: "destructive",
+          title: "Camera Access Denied",
+          description: "Please enable camera permissions in your browser settings to use this app.",
+        });
+      }
     }
   };
 
@@ -172,10 +189,13 @@ export default function SymptomCheckerPage() {
       
       const context = canvas.getContext("2d");
       if (context) {
-        context.translate(video.videoWidth, 0);
-        context.scale(-1, 1);
+        // Flip the canvas context horizontally to match the mirrored video feed
+        if(video.style.transform === 'scaleX(-1)') {
+            context.translate(video.videoWidth, 0);
+            context.scale(-1, 1);
+        }
+        
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-        context.setTransform(1, 0, 0, 1, 0, 0);
         const dataUrl = canvas.toDataURL("image/webp");
         setCapturedImage(dataUrl);
         disableCamera();
@@ -321,7 +341,7 @@ export default function SymptomCheckerPage() {
                     {isCameraEnabled ? (
                         <div className="space-y-4">
                             <div className="relative w-full aspect-video rounded-md bg-muted overflow-hidden">
-                               <video ref={videoRef} className="w-full h-full object-cover transform -scale-x-100" autoPlay muted playsInline />
+                               <video ref={videoRef} className="w-full h-full object-cover" style={{transform: streamRef.current?.getVideoTracks()[0].getSettings().facingMode !== 'environment' ? 'scaleX(-1)' : 'none'}} autoPlay muted playsInline />
                             </div>
                             <div className="flex gap-2">
                                 <Button onClick={takePicture} type="button">
