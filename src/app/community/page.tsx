@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-const centralSchemes = [
+const allSchemes = [
   {
     title: "Ayushman Bharat – Pradhan Mantri Jan Arogya Yojna (PM-JAY)",
     organization: "Central Govt",
@@ -41,10 +41,7 @@ const centralSchemes = [
       beneficiaries: "Free treatment, including surgeries, for a wide range of health conditions.",
     },
   },
-];
-
-const stateSchemes = [
-    {
+  {
     title: "Mukh Mantri Sehat Yojana",
     organization: "Punjab Govt",
     tags: ["Punjab", "State Scheme"],
@@ -54,9 +51,9 @@ const stateSchemes = [
       beneficiaries: "Families can avail cashless treatment up to Rs. 5 Lakh per year.",
     },
   },
-]
+];
 
-const SchemeCard = ({ scheme }: { scheme: (typeof centralSchemes)[0] }) => (
+const SchemeCard = ({ scheme }: { scheme: (typeof allSchemes)[0] }) => (
     <Card>
         <CardHeader>
         <CardTitle>{scheme.title}</CardTitle>
@@ -114,18 +111,9 @@ export default function CommunityPage() {
           <div className="mx-auto mt-16 max-w-5xl space-y-12">
             
             <section>
-              <h2 className="text-center font-headline text-3xl font-bold">Central Government Schemes</h2>
+              <h2 className="text-center font-headline text-3xl font-bold">Government Health Schemes</h2>
               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                {centralSchemes.map((scheme) => (
-                    <SchemeCard key={scheme.title} scheme={scheme} />
-                ))}
-              </div>
-            </section>
-            
-            <section>
-              <h2 className="text-center font-headline text-3xl font-bold">State Government Schemes (Punjab)</h2>
-               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                {stateSchemes.map((scheme) => (
+                {allSchemes.map((scheme) => (
                     <SchemeCard key={scheme.title} scheme={scheme} />
                 ))}
               </div>
