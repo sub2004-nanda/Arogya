@@ -29,7 +29,7 @@ const ashaFeatures = [
         icon: Activity,
         title: "Vitals Panel",
         description: "Record patient vitals like BP and temperature during visits.",
-        link: "#",
+        link: "/asha-dashboard/vitals-panel",
         stat: "Offline Ready",
         cta: "Open Panel"
     },
