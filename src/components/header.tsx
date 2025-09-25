@@ -5,8 +5,9 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Siren, LogOut, Mic } from "lucide-react";
+import { Siren, LogOut, Mic, RefreshCw } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 
 const patientNavLinks = [
   { href: "/home", label: "Home" },
@@ -26,6 +27,7 @@ const doctorNavLinks = [
 const ashaNavLinks = [
     { href: "/asha-dashboard", label: "Home" },
     { href: "/community", label: "Community" },
+    { href: "#", label: "Health Campaigns" },
 ];
 
 const pharmacyNavLinks = [
@@ -37,6 +39,7 @@ const pharmacyNavLinks = [
 
 export function Header() {
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   
   if (!user) {
     return null; // Don't render header if not logged in
@@ -53,6 +56,20 @@ export function Header() {
   } else if (user.role === 'pharmacy') {
       navLinks = pharmacyNavLinks;
       homeLink = "/pharmacy-dashboard";
+  }
+
+  const handleSync = () => {
+    toast({
+        title: "Syncing Data...",
+        description: "Your offline data is being synced with the server.",
+    });
+    // Add actual sync logic here
+    setTimeout(() => {
+       toast({
+        title: "Sync Complete!",
+        description: "All data is now up-to-date.",
+    });
+    }, 2000);
   }
 
 
@@ -91,6 +108,12 @@ export function Header() {
                 <Mic className="h-5 w-5" />
                 <span className="sr-only">Voice for Notes</span>
               </Link>
+            </Button>
+          )}
+           {user.role === 'asha' && (
+            <Button variant="outline" size="sm" onClick={handleSync}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Sync Data
             </Button>
           )}
           {user.role !== 'doctor' && user.role !== 'pharmacy' && (

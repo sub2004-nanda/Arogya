@@ -1,8 +1,63 @@
 
+"use client";
+
+import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, ClipboardList, Activity } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Users, ClipboardList, Activity, CalendarPlus, Megaphone, QrCode, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const ashaFeatures = [
+    {
+        icon: ClipboardList,
+        title: "Field Tasks",
+        description: "View your list of assigned patient visits and health surveys.",
+        link: "#",
+        stat: "5 pending",
+        cta: "View Tasks"
+    },
+    {
+        icon: Users,
+        title: "Patient Management",
+        description: "Access and update health records for community members.",
+        link: "#",
+        stat: "85 households",
+        cta: "Manage Patients"
+    },
+    {
+        icon: Activity,
+        title: "Vitals Collection",
+        description: "Record patient vitals like BP and temperature during visits.",
+        link: "#",
+        stat: "Offline Ready",
+        cta: "Collect Vitals"
+    },
+    {
+        icon: CalendarPlus,
+        title: "Appointment Assistance",
+        description: "Help community members book appointments with doctors.",
+        link: "/appointments",
+        stat: "New Booking",
+        cta: "Book Appointment"
+    },
+    {
+        icon: Megaphone,
+        title: "Health Campaigns",
+        description: "Get information on current and upcoming health campaigns.",
+        link: "#",
+        stat: "2 Active",
+        cta: "View Campaigns"
+    },
+    {
+        icon: QrCode,
+        title: "Scan Patient QR",
+        description: "Quickly verify and pull up patient records by scanning their QR code.",
+        link: "/doctor-dashboard/qr-scanner",
+        stat: "Verify",
+        cta: "Scan QR"
+    }
+];
 
 export default function AshaDashboardPage() {
   return (
@@ -13,44 +68,41 @@ export default function AshaDashboardPage() {
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl">ASHA Worker Dashboard</h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              Manage your community tasks and patient information.
+              Your hub for managing community health tasks and patient information.
             </p>
           </div>
-          <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <Card>
-                  <CardHeader>
-                      <CardTitle className="flex items-center gap-2"><Users/> Community Members</CardTitle>
-                      <CardDescription>View and manage profiles in your area.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                      <p className="text-4xl font-bold">85</p>
-                      <p className="text-sm text-muted-foreground">households covered</p>
-                  </CardContent>
-              </Card>
-              <Card>
-                  <CardHeader>
-                      <CardTitle className="flex items-center gap-2"><ClipboardList/> Daily Tasks</CardTitle>
-                      <CardDescription>Check your list of assigned tasks.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                      <p className="text-4xl font-bold">8</p>
-                      <p className="text-sm text-muted-foreground">tasks pending today</p>
-                  </CardContent>
-              </Card>
-              <Card>
-                  <CardHeader>
-                      <CardTitle className="flex items-center gap-2"><Activity/> Health Surveys</CardTitle>
-                      <CardDescription>Conduct and submit health surveys.</CardDescription>
-                  </CardHeader>
-                   <CardContent>
-                      <p className="text-4xl font-bold">3</p>
-                      <p className="text-sm text-muted-foreground">surveys to conduct</p>
-                  </CardContent>
-              </Card>
+          <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {ashaFeatures.map((feature) => (
+                 <Card key={feature.title} className="flex flex-col text-left transition-shadow hover:shadow-xl">
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <div className="bg-primary/10 p-3 rounded-lg w-fit">
+                                <feature.icon className="h-6 w-6 text-primary" />
+                            </div>
+                            <div className="text-right">
+                                <p className="text-2xl font-bold">{feature.stat.split(' ')[0]}</p>
+                                <p className="text-xs text-muted-foreground">{feature.stat.split(' ').slice(1).join(' ')}</p>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                        <CardTitle className="text-xl font-semibold">
+                            {feature.title}
+                        </CardTitle>
+                        <p className="mt-2 text-muted-foreground">
+                            {feature.description}
+                        </p>
+                    </CardContent>
+                    <CardFooter>
+                        <Button asChild className="w-full">
+                            <Link href={feature.link}>
+                                {feature.cta} <ArrowRight className="ml-2" />
+                            </Link>
+                        </Button>
+                    </CardFooter>
+                </Card>
+              ))}
           </div>
-           <div className="mt-10 text-center text-muted-foreground">
-              <p>ASHA worker-specific features are coming soon. Stay tuned!</p>
-            </div>
         </div>
       </main>
       <Footer />
