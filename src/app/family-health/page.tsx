@@ -226,24 +226,28 @@ export default function FamilyHealthPage() {
                         <CardTitle className="flex items-center gap-2"><Calendar className="text-primary"/> Upcoming Appointments</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Patient</TableHead>
-                                    <TableHead>Doctor</TableHead>
-                                    <TableHead>Date</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {mockFamilyAppointments.map(appt => (
-                                    <TableRow key={appt.id}>
-                                        <TableCell>{appt.memberName}</TableCell>
-                                        <TableCell>{appt.doctor} ({appt.specialty})</TableCell>
-                                        <TableCell>{format(appt.date, "PPP 'at' h:mm a")}</TableCell>
+                         {mockFamilyAppointments.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Patient</TableHead>
+                                        <TableHead>Doctor</TableHead>
+                                        <TableHead>Date</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {mockFamilyAppointments.map(appt => (
+                                        <TableRow key={appt.id}>
+                                            <TableCell>{appt.memberName}</TableCell>
+                                            <TableCell>{appt.doctor} ({appt.specialty})</TableCell>
+                                            <TableCell>{format(appt.date, "PPP 'at' h:mm a")}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                         ) : (
+                            <p className="text-center text-muted-foreground">Loading...</p>
+                         )}
                     </CardContent>
                 </Card>
 
@@ -253,24 +257,28 @@ export default function FamilyHealthPage() {
                         <CardTitle className="flex items-center gap-2"><Pill className="text-primary"/> Recent Prescriptions</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Patient</TableHead>
-                                    <TableHead>Medicine</TableHead>
-                                    <TableHead>Prescribed On</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {mockFamilyPrescriptions.map(pre => (
-                                    <TableRow key={pre.id}>
-                                        <TableCell>{pre.memberName}</TableCell>
-                                        <TableCell>{pre.medicine}</TableCell>
-                                        <TableCell>{format(pre.date, "PPP")}</TableCell>
+                        {mockFamilyPrescriptions.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Patient</TableHead>
+                                        <TableHead>Medicine</TableHead>
+                                        <TableHead>Prescribed On</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {mockFamilyPrescriptions.map(pre => (
+                                        <TableRow key={pre.id}>
+                                            <TableCell>{pre.memberName}</TableCell>
+                                            <TableCell>{pre.medicine}</TableCell>
+                                            <TableCell>{format(pre.date, "PPP")}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : (
+                            <p className="text-center text-muted-foreground">Loading...</p>
+                        )}
                     </CardContent>
                 </Card>
 
@@ -280,26 +288,30 @@ export default function FamilyHealthPage() {
                         <CardTitle className="flex items-center gap-2"><ShieldCheck className="text-primary"/> Vaccination Schedule (Priya Sharma)</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                             <TableHeader>
-                                <TableRow>
-                                    <TableHead>Vaccine</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Date</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {mockVaccinations.map(vac => (
-                                     <TableRow key={vac.id}>
-                                        <TableCell>{vac.vaccine}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={vac.status === 'Completed' ? 'secondary' : 'default'}>{vac.status}</Badge>
-                                        </TableCell>
-                                        <TableCell>{format(vac.dueDate, "PPP")}</TableCell>
+                        {mockVaccinations.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Vaccine</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Date</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {mockVaccinations.map(vac => (
+                                        <TableRow key={vac.id}>
+                                            <TableCell>{vac.vaccine}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={vac.status === 'Completed' ? 'secondary' : 'default'}>{vac.status}</Badge>
+                                            </TableCell>
+                                            <TableCell>{format(vac.dueDate, "PPP")}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : (
+                            <p className="text-center text-muted-foreground">Loading...</p>
+                        )}
                     </CardContent>
                 </Card>
             </div>

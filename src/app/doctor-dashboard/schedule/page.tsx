@@ -15,69 +15,6 @@ import { format } from "date-fns";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
 
-const mockDoctorAppointments: Appointment[] = [
-    {
-        id: 'doc-apt-1',
-        patientName: 'Sunita Sharma',
-        doctorId: 'dr-ankit',
-        doctorName: 'Dr. Ankit',
-        doctorSpecialty: 'General Physician',
-        appointmentDate: new Date(new Date().setHours(9, 30, 0, 0)),
-        type: 'in-person',
-        status: 'Scheduled',
-        reason: 'Chest Pain, Shortness of Breath',
-        priority: 'Emergency',
-    },
-    {
-        id: 'doc-apt-2',
-        patientName: 'Rajesh Kumar',
-        doctorId: 'dr-ankit',
-        doctorName: 'Dr. Ankit',
-        doctorSpecialty: 'General Physician',
-        appointmentDate: new Date(new Date().setHours(10, 0, 0, 0)),
-        type: 'in-person',
-        status: 'Scheduled',
-        reason: 'High Blood Pressure Reading (180/120)',
-        priority: 'High Risk',
-    },
-    {
-        id: 'doc-apt-3',
-        patientName: 'Anita Verma',
-        doctorId: 'dr-ankit',
-        doctorName: 'Dr. Ankit',
-        doctorSpecialty: 'General Physician',
-        appointmentDate: new Date(new Date().setHours(11, 0, 0, 0)),
-        type: 'in-person',
-        status: 'Scheduled',
-        reason: 'Follow-up Consultation',
-        priority: 'Routine',
-    },
-    {
-        id: 'doc-apt-4',
-        patientName: 'Rohan Joshi',
-        doctorId: 'dr-ankit',
-        doctorName: 'Dr. Ankit',
-        doctorSpecialty: 'General Physician',
-        appointmentDate: new Date(new Date().setHours(11, 30, 0, 0)),
-        type: 'video-consultation',
-        status: 'Scheduled',
-        reason: 'Common Cold & Cough',
-        priority: 'Routine',
-    },
-    {
-        id: 'doc-apt-5',
-        patientName: 'Priya Singh',
-        doctorId: 'dr-ankit',
-        doctorName: 'Dr. Ankit',
-        doctorSpecialty: 'General Physician',
-        appointmentDate: new Date(new Date().setHours(12, 0, 0, 0)),
-        type: 'in-person',
-        status: 'Scheduled',
-        reason: 'Annual Health Checkup',
-        priority: 'Routine',
-    },
-];
-
 export default function DoctorSchedulePage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const heroImage = PlaceHolderImages.find((img) => img.id === 'doctor-schedule-hero');
@@ -85,6 +22,69 @@ export default function DoctorSchedulePage() {
   useEffect(() => {
     // In a real app, you would fetch this data from your backend.
     // For now, we'll use the mock data and sort it.
+    const mockDoctorAppointments: Appointment[] = [
+        {
+            id: 'doc-apt-1',
+            patientName: 'Sunita Sharma',
+            doctorId: 'dr-ankit',
+            doctorName: 'Dr. Ankit',
+            doctorSpecialty: 'General Physician',
+            appointmentDate: new Date(new Date().setHours(9, 30, 0, 0)),
+            type: 'in-person',
+            status: 'Scheduled',
+            reason: 'Chest Pain, Shortness of Breath',
+            priority: 'Emergency',
+        },
+        {
+            id: 'doc-apt-2',
+            patientName: 'Rajesh Kumar',
+            doctorId: 'dr-ankit',
+            doctorName: 'Dr. Ankit',
+            doctorSpecialty: 'General Physician',
+            appointmentDate: new Date(new Date().setHours(10, 0, 0, 0)),
+            type: 'in-person',
+            status: 'Scheduled',
+            reason: 'High Blood Pressure Reading (180/120)',
+            priority: 'High Risk',
+        },
+        {
+            id: 'doc-apt-3',
+            patientName: 'Anita Verma',
+            doctorId: 'dr-ankit',
+            doctorName: 'Dr. Ankit',
+            doctorSpecialty: 'General Physician',
+            appointmentDate: new Date(new Date().setHours(11, 0, 0, 0)),
+            type: 'in-person',
+            status: 'Scheduled',
+            reason: 'Follow-up Consultation',
+            priority: 'Routine',
+        },
+        {
+            id: 'doc-apt-4',
+            patientName: 'Rohan Joshi',
+            doctorId: 'dr-ankit',
+            doctorName: 'Dr. Ankit',
+            doctorSpecialty: 'General Physician',
+            appointmentDate: new Date(new Date().setHours(11, 30, 0, 0)),
+            type: 'video-consultation',
+            status: 'Scheduled',
+            reason: 'Common Cold & Cough',
+            priority: 'Routine',
+        },
+        {
+            id: 'doc-apt-5',
+            patientName: 'Priya Singh',
+            doctorId: 'dr-ankit',
+            doctorName: 'Dr. Ankit',
+            doctorSpecialty: 'General Physician',
+            appointmentDate: new Date(new Date().setHours(12, 0, 0, 0)),
+            type: 'in-person',
+            status: 'Scheduled',
+            reason: 'Annual Health Checkup',
+            priority: 'Routine',
+        },
+    ];
+
     const sortedAppointments = [...mockDoctorAppointments].sort(
       (a, b) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime()
     );

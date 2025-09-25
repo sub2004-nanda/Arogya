@@ -35,7 +35,7 @@ const mockPatients = [
   { id: 'PAT-REG-003', name: 'Anita Verma' },
 ];
 
-const mockMedicalHistories: { [key: string]: Partial<Appointment>[] } = {
+const getMockMedicalHistories = (): { [key: string]: Partial<Appointment>[] } => ({
   'PAT-EMG-001': [
     {
       diagnosis: 'Acute Myocardial Infarction',
@@ -72,7 +72,7 @@ const mockMedicalHistories: { [key: string]: Partial<Appointment>[] } = {
       appointmentDate: new Date('2024-04-22'),
     },
   ]
-};
+});
 
 interface SummaryResult {
   summary?: string;
@@ -96,6 +96,7 @@ export default function AiInsightsPage() {
       return;
     }
 
+    const mockMedicalHistories = getMockMedicalHistories();
     const patientHistory = mockMedicalHistories[selectedPatient]?.map(record => ({
         ...record,
         date: format(new Date(record.appointmentDate!), 'yyyy-MM-dd'),
