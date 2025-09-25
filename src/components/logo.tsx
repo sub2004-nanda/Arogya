@@ -7,25 +7,26 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
         <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
         <stop offset="100%" style={{ stopColor: 'hsl(190, 60%, 70%)', stopOpacity: 1 }} />
       </linearGradient>
-      <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={{ stopColor: 'hsl(var(--accent))', stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: 'hsl(200, 15%, 55%)', stopOpacity: 1 }} />
-      </linearGradient>
       <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))', stopOpacity: 1 }} />
         <stop offset="100%" style={{ stopColor: 'hsl(200, 15%, 40%)', stopOpacity: 1 }} />
       </linearGradient>
     </defs>
-    <rect x="0" y="0" width="300" height="100" fill="transparent" />
-    <g transform="scale(2.5) translate(0, 0)">
-      <circle cx="50" cy="50" r="45" fill="hsl(var(--primary-foreground))" stroke="hsl(var(--primary) / 0.2)" strokeWidth="2" opacity="0.1" />
-      <rect x="42" y="30" width="16" height="40" rx="3" fill="url(#crossGradient)" />
-      <rect x="30" y="42" width="40" height="16" rx="3" fill="url(#crossGradient)" />
-      <path d="M50 62 C46 58, 40 58, 40 52 C40 48, 44 46, 50 50 C56 46, 60 48, 60 52 C60 58, 54 58, 50 62 Z" fill="url(#heartGradient)" opacity="0.8" />
-      <path d="M20 50 L25 50 L27 45 L29 55 L31 40 L33 60 L35 50 L40 50" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" opacity="0.6" />
-      <path d="M60 50 L65 50 L67 45 L69 55 L71 40 L73 60 L75 50 L80 50" stroke="hsl(var(--accent))" strokeWidth="2" fill="none" opacity="0.6" />
-      <text x="110" y="55" fontFamily="var(--font-headline), system-ui, sans-serif" fontSize="28" fontWeight="700" fill="url(#textGradient)">Arogya</text>
-      <text x="110" y="75" fontFamily="var(--font-body), system-ui, sans-serif" fontSize="11" fontWeight="400" fill="hsl(var(--muted-foreground))" opacity="0.8">Your Health, Connected To Arogya</text>
+    
+    {/* Logo Icon */}
+    <g transform="translate(10, 10) scale(1.1)">
+      <circle cx="40" cy="40" r="40" fill="hsl(var(--secondary) / 0.5)" />
+      {/* Plus icon */}
+      <rect x="32" y="20" width="16" height="40" rx="4" fill="url(#crossGradient)" />
+      <rect x="20" y="32" width="40" height="16" rx="4" fill="url(#crossGradient)" />
+       {/* Heartbeat line */}
+      <path d="M22 40 L30 40 L34 45 L38 35 L42 40 L50 40" stroke="hsl(var(--background))" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </g>
+    
+    {/* Text */}
+    <g transform="translate(110, 0)">
+      <text x="0" y="55" fontFamily="var(--font-headline), system-ui, sans-serif" fontSize="28" fontWeight="700" fill="url(#textGradient)">Arogya</text>
+      <text x="0" y="75" fontFamily="var(--font-body), system-ui, sans-serif" fontSize="11" fontWeight="400" fill="hsl(var(--muted-foreground))" opacity="0.8">Your Health, Connected To Arogya</text>
     </g>
   </svg>
 );
