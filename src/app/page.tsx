@@ -52,26 +52,12 @@ export default function LandingPage() {
                     <Logo className="h-10 w-auto" />
                 </Link>
                 <div className="flex items-center gap-2">
-                  {user ? (
-                    <>
-                       <Button asChild>
-                         <Link href="/home">Dashboard</Link>
-                       </Button>
-                       <Button variant="ghost" size="icon" onClick={logout}>
-                          <LogOut className="h-4 w-4" />
-                          <span className="sr-only">Logout</span>
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button asChild variant="ghost">
-                          <Link href="/login">Login</Link>
-                      </Button>
-                      <Button asChild>
-                          <Link href="/signup">Sign Up</Link>
-                      </Button>
-                    </>
-                  )}
+                  <Button asChild variant="ghost">
+                      <Link href="/login">Login</Link>
+                  </Button>
+                  <Button asChild>
+                      <Link href="/signup">Sign Up</Link>
+                  </Button>
                 </div>
             </div>
         </header>
