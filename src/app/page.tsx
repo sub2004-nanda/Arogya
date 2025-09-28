@@ -1,16 +1,14 @@
 
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/hooks/use-auth";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, Bot, Calendar, Home, LogOut, Stethoscope, Pill } from "lucide-react";
+import { ArrowRight, Bot, Calendar, Stethoscope, Pill } from "lucide-react";
 import { Footer } from "@/components/footer";
+import { LandingPageHeader } from "@/components/landing-page-header";
 
 const features = [
   {
@@ -41,26 +39,11 @@ const features = [
 
 
 export default function LandingPage() {
-  const { user, logout } = useAuth();
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-home');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-        <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <Link href="/" className="flex items-center gap-2">
-                    <Logo className="h-10 w-auto" />
-                </Link>
-                <div className="flex items-center gap-2">
-                  <Button asChild variant="ghost">
-                      <Link href="/login">Login</Link>
-                  </Button>
-                  <Button asChild>
-                      <Link href="/signup">Sign Up</Link>
-                  </Button>
-                </div>
-            </div>
-        </header>
+        <LandingPageHeader />
 
         <main className="flex-1">
             {/* Hero Section */}
